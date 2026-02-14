@@ -21,6 +21,10 @@ interface CatalogClientProps {
   celebrities: Celebrity[];
   /** All categories for filter tabs */
   categories: Category[];
+  /** Pre-selected category (e.g., "Glumci") for category pages */
+  initialCategory?: string;
+  /** Whether to show the page header section (default: true) */
+  showHeader?: boolean;
 }
 
 /** Items per page for load-more pagination */
@@ -29,12 +33,14 @@ const PAGE_SIZE = 8;
 export default function CatalogClient({
   celebrities,
   categories,
+  initialCategory,
+  showHeader = true,
 }: CatalogClientProps) {
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Svi");
+  const [activeCategory, setActiveCategory] = useState(initialCategory || "Svi");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -119,25 +125,27 @@ export default function CatalogClient({
   return (
     <>
       {/* ----------------------------------------------------------------- */}
-      {/* Page Header                                                       */}
+      {/* Page Header (hidden on category pages that have their own hero)   */}
       {/* ----------------------------------------------------------------- */}
-      <section className="bg-gradient-to-b from-primary-50 to-white pb-8 pt-12 sm:pb-12 sm:pt-16">
-        <Container>
-          <div className="text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-              Sve zvezde
-            </h1>
-            <div className="mx-auto mt-4 flex items-center justify-center gap-1.5">
-              <span className="h-1 w-6 rounded-full bg-secondary-400" />
-              <span className="h-1 w-12 rounded-full bg-primary-500" />
-              <span className="h-1 w-6 rounded-full bg-secondary-400" />
+      {showHeader && (
+        <section className="bg-gradient-to-b from-primary-50 to-white pb-8 pt-12 sm:pb-12 sm:pt-16">
+          <Container>
+            <div className="text-center">
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                Sve zvezde
+              </h1>
+              <div className="mx-auto mt-4 flex items-center justify-center gap-1.5">
+                <span className="h-1 w-6 rounded-full bg-secondary-400" />
+                <span className="h-1 w-12 rounded-full bg-primary-500" />
+                <span className="h-1 w-6 rounded-full bg-secondary-400" />
+              </div>
+              <p className="mx-auto mt-4 max-w-xl text-lg text-slate-500">
+                Pronađi savršenu zvezdu za personalizovanu video poruku
+              </p>
             </div>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-slate-500">
-              Pronađi savršenu zvezdu za personalizovanu video poruku
-            </p>
-          </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* Search + Sort + Category Tabs                                     */}

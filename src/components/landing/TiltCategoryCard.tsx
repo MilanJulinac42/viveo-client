@@ -25,7 +25,7 @@ export default function TiltCategoryCard({ category, accentClass, trending }: Ti
   return (
     <a
       ref={tilt.ref}
-      href={`#${category.slug}`}
+      href={`/kategorija/${category.slug}`}
       className="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/30 bg-white/15 p-6 text-center shadow-lg shadow-black/5 backdrop-blur-xl transition-all duration-300 ease-out hover:bg-white/25 hover:shadow-xl"
       {...tilt.handlers}
     >
