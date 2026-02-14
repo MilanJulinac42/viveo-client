@@ -8,6 +8,7 @@
  * side-by-side on lg breakpoint.
  */
 
+import Link from "next/link";
 import Container from "@/components/layout/Container";
 import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
@@ -81,9 +82,11 @@ export default function ProfileHero({ celebrity }: ProfileHeroProps) {
                   <p className="text-sm text-white/60">Cena video poruke</p>
                   <p className="text-2xl font-bold text-white">{formatPrice(celebrity.price)}</p>
                 </div>
-                <Button variant="secondary" size="lg" id="hero-cta">
-                  Naruci video poruku
-                </Button>
+                <Link href={`/naruci/${celebrity.slug}`}>
+                  <Button variant="secondary" size="lg" id="hero-cta">
+                    Naruci video poruku
+                  </Button>
+                </Link>
               </div>
             </ScrollReveal>
           </div>

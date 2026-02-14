@@ -7,6 +7,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
@@ -15,9 +16,10 @@ import { formatPrice } from "@/lib/utils";
 interface StickyBottomCTAProps {
   price: number;
   name: string;
+  slug: string;
 }
 
-export default function StickyBottomCTA({ price, name }: StickyBottomCTAProps) {
+export default function StickyBottomCTA({ price, name, slug }: StickyBottomCTAProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -54,9 +56,11 @@ export default function StickyBottomCTA({ price, name }: StickyBottomCTAProps) {
                   {formatPrice(price)}
                 </p>
               </div>
-              <Button variant="primary" size="md">
-                Naruči video
-              </Button>
+              <Link href={`/naruci/${slug}`}>
+                <Button variant="primary" size="md">
+                  Naruči video
+                </Button>
+              </Link>
             </div>
           </Container>
         </motion.div>

@@ -97,7 +97,7 @@ export default async function CelebrityProfilePage({ params }: PageProps) {
         <ProfileReviews reviews={reviews} celebrityName={celebrity.name} />
         <SimilarCelebrities celebrities={similar} />
       </main>
-      <StickyBottomCTA price={celebrity.price} name={celebrity.name} />
+      <StickyBottomCTA price={celebrity.price} name={celebrity.name} slug={celebrity.slug} />
       <Footer />
     </>
   );
