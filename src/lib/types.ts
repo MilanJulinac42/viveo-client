@@ -239,6 +239,34 @@ export interface AvailabilitySlot {
   maxRequests: number;
 }
 
+/** A fan's order (from the buyer/fan perspective) */
+export interface FanOrder {
+  /** Unique identifier */
+  id: string;
+  /** Celebrity who will record the video */
+  celebrityName: string;
+  /** Celebrity slug for linking */
+  celebritySlug: string;
+  /** Celebrity avatar URL */
+  celebrityImage: string;
+  /** Which video type was requested */
+  videoType: string;
+  /** Occasion (e.g., "Rođendan", "Motivacija") */
+  occasion: string;
+  /** The fan's instructions/message */
+  instructions: string;
+  /** Name of the recipient (person the video is for) */
+  recipientName: string;
+  /** Price paid in RSD */
+  price: number;
+  /** Current status */
+  status: RequestStatus;
+  /** Date the order was placed (ISO string) */
+  createdAt: string;
+  /** Deadline to fulfill (ISO string) */
+  deadline: string;
+}
+
 /** Celebrity profile settings (editable fields) */
 export interface ProfileSettings {
   /** Display name */

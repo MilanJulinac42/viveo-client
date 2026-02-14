@@ -1,0 +1,246 @@
+/**
+ * @fileoverview Fan dashboard orchestrator with stat cards, filters, and order grid.
+ * Displays fan's order history with status filtering and search functionality.
+ */
+
+"use client";
+
+import { useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
+import { MOCK_FAN_ORDERS } from "@/lib/constants";
+import StatCard from "@/components/dashboard/StatCard";
+import SearchInput from "@/components/catalog/SearchInput";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import Button from "@/components/ui/Button";
+import FanOrderCard from "./FanOrderCard";
+import type { RequestStatus } from "@/lib/types";
+
+export default function FanDashboardClient() {
+  const [statusFilter, setStatusFilter] = useState<RequestStatus | "all">(
+    "all"
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // ── Computed values ──────────────────────────────────────────────────
+
+  const statusCounts = useMemo(() => {
+    const counts = {
+      all: MOCK_FAN_ORDERS.length,
+      pending: 0,
+      approved: 0,
+      completed: 0,
+      rejected: 0,
+    };
+    MOCK_FAN_ORDERS.forEach((o) => {
+      counts[o.status]++;
+    });
+    return counts;
+  }, []);
+
+  const totalSpent = useMemo(
+    () => MOCK_FAN_ORDERS.reduce((sum, o) => sum + o.price, 0),
+    []
+  );
+
+  const filteredOrders = useMemo(() => {
+    let orders = MOCK_FAN_ORDERS;
+    if (statusFilter !== "all") {
+      orders = orders.filter((o) => o.status === statusFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      orders = orders.filter(
+        (o) =>
+          o.celebrityName.toLowerCase().includes(q) ||
+          o.recipientName.toLowerCase().includes(q) ||
+          o.videoType.toLowerCase().includes(q)
+      );
+    }
+    return orders;
+  }, [statusFilter, searchQuery]);
+
+  // ── Filter tabs ──────────────────────────────────────────────────────
+
+  const FILTER_TABS: { key: RequestStatus | "all"; label: string }[] = [
+    { key: "all", label: "Svi" },
+    { key: "pending", label: "Na čekanju" },
+    { key: "approved", label: "Prihvaćeni" },
+    { key: "completed", label: "Završeni" },
+    { key: "rejected", label: "Odbijeni" },
+  ];
+
+  // ── Render ───────────────────────────────────────────────────────────
+
+  return (
+    <div className="py-8">
+      {/* Page header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+          Moje porudžbine
+        </h1>
+        <p className="mt-1 text-sm text-slate-500">
+          Pregled vaših narudžbina video poruka
+        </p>
+      </div>
+
+      {/* Stat cards */}
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatCard
+          label="Ukupno narudžbina"
+          value={MOCK_FAN_ORDERS.length}
+          icon={
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+              />
+            </svg>
+          }
+        />
+        <StatCard
+          label="Primljeni videi"
+          value={statusCounts.completed}
+          icon={
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          }
+        />
+        <StatCard
+          label="Na čekanju"
+          value={statusCounts.pending + statusCounts.approved}
+          icon={
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          }
+        />
+        <StatCard
+          label="Ukupno potrošeno"
+          value={totalSpent}
+          prefix=""
+          suffix=" RSD"
+          icon={
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
+              />
+            </svg>
+          }
+        />
+      </div>
+
+      {/* Filters + Search */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Filter tabs */}
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none sm:pb-0">
+          {FILTER_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setStatusFilter(tab.key)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200",
+                statusFilter === tab.key
+                  ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
+                  : "border border-slate-200 bg-white/80 text-slate-600 hover:bg-primary-50 hover:text-primary-700"
+              )}
+            >
+              {tab.label}
+              <span
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 text-xs font-bold",
+                  statusFilter === tab.key
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-100 text-slate-500"
+                )}
+              >
+                {statusCounts[tab.key]}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Search */}
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Pretražite po imenu zvezde..."
+          className="sm:w-72"
+        />
+      </div>
+
+      {/* Orders grid */}
+      {filteredOrders.length > 0 ? (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {filteredOrders.map((order, i) => (
+            <ScrollReveal key={order.id} delay={i * 0.05}>
+              <FanOrderCard order={order} />
+            </ScrollReveal>
+          ))}
+        </div>
+      ) : (
+        /* Empty state */
+        <div className="py-16 text-center">
+          <span className="text-5xl">📦</span>
+          <h3 className="mt-4 text-lg font-semibold text-slate-700">
+            Nema narudžbina
+          </h3>
+          <p className="mt-1 text-sm text-slate-500">
+            {searchQuery || statusFilter !== "all"
+              ? "Pokušajte sa drugim filterom ili pretragom"
+              : "Još uvek nemate narudžbine video poruka"}
+          </p>
+          {(searchQuery || statusFilter !== "all") && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={() => {
+                setStatusFilter("all");
+                setSearchQuery("");
+              }}
+            >
+              Obriši filtere
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
