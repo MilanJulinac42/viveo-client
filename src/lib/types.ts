@@ -172,3 +172,87 @@ export interface HeroStat {
   /** Suffix text (e.g., "+") */
   suffix?: string;
 }
+
+// ---------------------------------------------------------------------------
+// Dashboard Types
+// ---------------------------------------------------------------------------
+
+/** Status of a video request */
+export type RequestStatus = "pending" | "approved" | "completed" | "rejected";
+
+/** Dashboard tab identifiers */
+export type DashboardTab = "requests" | "earnings" | "profile" | "calendar";
+
+/** A video request from a fan to a celebrity */
+export interface VideoRequest {
+  /** Unique identifier */
+  id: string;
+  /** Name of the person who ordered */
+  buyerName: string;
+  /** Buyer avatar URL (empty string = placeholder) */
+  buyerAvatar: string;
+  /** Which video type was requested */
+  videoType: string;
+  /** Occasion (e.g., "Rođendan", "Motivacija") */
+  occasion: string;
+  /** The buyer's instructions/message */
+  instructions: string;
+  /** Name of the recipient (person the video is for) */
+  recipientName: string;
+  /** Price paid in RSD */
+  price: number;
+  /** Current status */
+  status: RequestStatus;
+  /** Date the request was placed (ISO string) */
+  createdAt: string;
+  /** Deadline to fulfill (ISO string) */
+  deadline: string;
+}
+
+/** Earnings summary for a time period */
+export interface EarningsSummary {
+  /** Total earnings in RSD for the period */
+  totalEarnings: number;
+  /** Number of completed requests */
+  completedRequests: number;
+  /** Number of pending requests */
+  pendingRequests: number;
+  /** Average rating received */
+  averageRating: number;
+  /** Earnings per day for the last 7 days */
+  weeklyEarnings: { day: string; amount: number }[];
+  /** Earnings per month for the last 6 months */
+  monthlyEarnings: { month: string; amount: number }[];
+  /** Breakdown by video type */
+  earningsByType: { type: string; amount: number; count: number }[];
+}
+
+/** A single availability slot for the celebrity's calendar */
+export interface AvailabilitySlot {
+  /** Unique identifier */
+  id: string;
+  /** Day of the week (0=Ponedeljak ... 6=Nedelja) */
+  dayOfWeek: number;
+  /** Whether the celebrity is available on this day */
+  available: boolean;
+  /** Maximum number of requests they'll accept this day */
+  maxRequests: number;
+}
+
+/** Celebrity profile settings (editable fields) */
+export interface ProfileSettings {
+  /** Display name */
+  name: string;
+  /** Short bio */
+  bio: string;
+  /** Extended bio for profile page */
+  extendedBio: string;
+  /** Price per video in RSD */
+  price: number;
+  /** Response time in hours */
+  responseTime: number;
+  /** Tag keywords */
+  tags: string[];
+  /** Whether currently accepting requests */
+  acceptingRequests: boolean;
+}
