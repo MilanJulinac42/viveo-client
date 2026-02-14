@@ -27,6 +27,12 @@ export interface Celebrity {
   bio: string;
   /** Average response time in hours */
   responseTime: number;
+  /** Extended biography for profile page */
+  extendedBio?: string;
+  /** Tag keywords for the celebrity */
+  tags?: string[];
+  /** Video types this celebrity offers */
+  videoTypes?: VideoType[];
 }
 
 /** Browsable category for filtering celebrities */
@@ -133,6 +139,24 @@ export interface PressLogo {
   id: string;
   /** Media outlet name */
   name: string;
+}
+
+/** Video type available on a celebrity's profile */
+export interface VideoType {
+  /** Unique identifier */
+  id: string;
+  /** Display title (e.g., "Rođendanska čestitka") */
+  title: string;
+  /** Occasion label (e.g., "Rođendan") */
+  occasion: string;
+  /** Emoji icon for the occasion */
+  emoji: string;
+  /** Tailwind gradient start class */
+  accentFrom: string;
+  /** Tailwind gradient end class */
+  accentTo: string;
+  /** Preview message text */
+  message: string;
 }
 
 /** Hero statistics item */

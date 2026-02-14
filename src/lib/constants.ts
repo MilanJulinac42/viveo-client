@@ -132,6 +132,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Poznati srpski glumac sa više od 20 godina iskustva u pozorištu i na filmu.",
     responseTime: 24,
+    extendedBio:
+      "Marko Nikolić je jedan od najcenjenijih srpskih glumaca svoje generacije. Sa preko 20 godina iskustva na pozorišnim daskama i filmskom platnu, osvojio je brojne nagrade uključujući Sterijinu nagradu i nagradu za najboljeg glumca na FEST-u. Poznat je po ulogama u dramama i komedijama, a publika ga voli zbog autentičnosti i topline koju unosi u svaki lik. Van glume, Marko je posvećen mentorstvu mladih glumaca i redovno drži radionice na Fakultetu dramskih umetnosti.",
+    tags: ["Glumac", "Pozorište", "Film", "Nagrađivani", "Mentor"],
+    videoTypes: [
+      { id: "vt-1-1", title: "Rođendanska čestitka", occasion: "Rođendan", emoji: "🎂", accentFrom: "from-pink-500", accentTo: "to-rose-600", message: "Srećan rođendan! Neka ti se svi snovi ostvare..." },
+      { id: "vt-1-2", title: "Motivaciona poruka", occasion: "Motivacija", emoji: "💪", accentFrom: "from-blue-500", accentTo: "to-cyan-600", message: "Veruj u sebe, sve je moguće ako radiš na tome..." },
+      { id: "vt-1-3", title: "Čestitka za praznik", occasion: "Praznici", emoji: "🎄", accentFrom: "from-emerald-500", accentTo: "to-teal-600", message: "Srećni praznici! Neka vam dom bude pun radosti..." },
+    ],
   },
   {
     id: "cel-2",
@@ -145,6 +153,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Pop zvezda sa brojem 1 hitovima i milionskim pregledima na YouTube-u.",
     responseTime: 48,
+    extendedBio:
+      "Jelena Petrović je jedna od najpopularnijih pop pevačica u Srbiji. Njen debi album je dostigao platinasti tiraž, a singlovi redovno zauzimaju prva mesta na top listama. Sa preko 5 miliona pregleda na YouTube-u i rasprodatim koncertima širom regiona, Jelena je postala ikona moderne srpske muzičke scene. Pored muzike, aktivna je u humanitarnom radu i ambasadorka je UNICEF-a za Srbiju.",
+    tags: ["Pevačica", "Pop muzika", "YouTube", "Humanitarni rad", "Koncerti"],
+    videoTypes: [
+      { id: "vt-2-1", title: "Muzička čestitka", occasion: "Čestitka", emoji: "🎶", accentFrom: "from-violet-500", accentTo: "to-purple-600", message: "Posebna pesma samo za tebe, od srca..." },
+      { id: "vt-2-2", title: "Rođendanska poruka", occasion: "Rođendan", emoji: "🎂", accentFrom: "from-pink-500", accentTo: "to-rose-600", message: "Srećan rođendan! Uživaj u svom danu..." },
+      { id: "vt-2-3", title: "Poruka za godišnjicu", occasion: "Godišnjica", emoji: "💕", accentFrom: "from-red-500", accentTo: "to-pink-600", message: "Čestitam vam godišnjicu! Ljubav je najlepša..." },
+    ],
   },
   {
     id: "cel-3",
@@ -158,6 +174,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Reprezentativac Srbije u fudbalu, igrač jednog od najjačih evropskih klubova.",
     responseTime: 72,
+    extendedBio:
+      "Stefan Jovanović je ponos srpskog fudbala. Kao kapiten reprezentacije, predvodio je tim do istorijskog uspeha na evropskom prvenstvu. Trenutno igra za jedan od najelitnijih klubova u Evropi gde je omiljen među navijačima. Stefan je poznat po sportskom duhu, profesionalizmu i posvećenosti mladim sportistima. Osnivač je fondacije koja finansira sportske akademije za decu iz manjih sredina.",
+    tags: ["Fudbaler", "Reprezentativac", "Kapiten", "Fondacija", "Sportski duh"],
+    videoTypes: [
+      { id: "vt-3-1", title: "Motivacija za sportiste", occasion: "Motivacija", emoji: "⚽", accentFrom: "from-green-500", accentTo: "to-emerald-600", message: "Treniraj jako, igraj pametno, nikad ne odustaj..." },
+      { id: "vt-3-2", title: "Rođendanska čestitka", occasion: "Rođendan", emoji: "🎉", accentFrom: "from-amber-500", accentTo: "to-orange-600", message: "Srećan rođendan, šampione! Neka ti godina bude..." },
+      { id: "vt-3-3", title: "Poruka ohrabrenja", occasion: "Ohrabrenje", emoji: "🏆", accentFrom: "from-sky-500", accentTo: "to-blue-600", message: "Svaki pad je prilika da ustaneš jači..." },
+    ],
   },
   {
     id: "cel-4",
@@ -171,6 +195,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Najpraćenija srpska influenserka sa preko milion pratilaca na Instagramu.",
     responseTime: 12,
+    extendedBio:
+      "Ana Đorđević je digitalna kreatorka sadržaja koja je osvojila srca publike autentičnošću i kreativnošću. Sa preko milion pratilaca na Instagramu i pola miliona na TikToku, Ana deli savete o modi, lepoti i životnom stilu. Sarađuje sa vodećim svetskim brendovima, a njen podcast o ženskom preduzetništvu je među top 10 u Srbiji. Ana veruje da je pozitivna energija zarazna i to unosi u svaku poruku.",
+    tags: ["Influenserka", "Instagram", "Moda", "Lifestyle", "Podcast"],
+    videoTypes: [
+      { id: "vt-4-1", title: "Personalizovani pozdrav", occasion: "Pozdrav", emoji: "👋", accentFrom: "from-fuchsia-500", accentTo: "to-pink-600", message: "Hej! Evo jednog posebnog pozdrava za tebe..." },
+      { id: "vt-4-2", title: "Saveti za stil", occasion: "Savet", emoji: "✨", accentFrom: "from-violet-500", accentTo: "to-indigo-600", message: "Imam specijalne savete za tvoj stil..." },
+      { id: "vt-4-3", title: "Rođendanska poruka", occasion: "Rođendan", emoji: "🎂", accentFrom: "from-rose-500", accentTo: "to-pink-600", message: "Srećan rođendan, prelepa! Uživaj maksimalno..." },
+    ],
   },
   {
     id: "cel-5",
@@ -184,6 +216,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Stand-up komičar poznat po hit emisiji i rasprodatim nastupima širom Srbije.",
     responseTime: 24,
+    extendedBio:
+      "Nikola Stanković je kralj srpskog stand-up humora. Njegov specijal na YouTube-u ima preko 10 miliona pregleda, a turneja mu je rasprodata mesecima unapred. Poznat po oštroj satiri i toplinskim zapažanjima o svakodnevnom životu u Srbiji, Nikola je omiljen gost na svim televizijama. Pored stand-upa, piše scenario za popularnu TV seriju i vodi humor podcast koji ima verne slušaoce.",
+    tags: ["Komičar", "Stand-up", "TV", "Podcast", "Scenarista"],
+    videoTypes: [
+      { id: "vt-5-1", title: "Šaljiva čestitka", occasion: "Humor", emoji: "😂", accentFrom: "from-yellow-500", accentTo: "to-amber-600", message: "Spremi se za smeh! Imam nešto posebno za tebe..." },
+      { id: "vt-5-2", title: "Roast poruka", occasion: "Roast", emoji: "🔥", accentFrom: "from-orange-500", accentTo: "to-red-600", message: "Drži se, ovo će te nasmejati do suza..." },
+      { id: "vt-5-3", title: "Poruka za ekipu", occasion: "Ekipa", emoji: "🍻", accentFrom: "from-lime-500", accentTo: "to-green-600", message: "Za tvoju ekipu imam jednu dobru priču..." },
+    ],
   },
   {
     id: "cel-6",
@@ -197,6 +237,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Voditeljka najgledanije jutarnje emisije u Srbiji sa 15 godina na TV-u.",
     responseTime: 48,
+    extendedBio:
+      "Milica Todorović je lice jutarnjeg programa koji svakodnevno prate milioni gledalaca. Sa 15 godina iskustva na televiziji, Milica je poznata po profesionalizmu, toplini i sposobnosti da svakog gosta učini opuštenim. Dobitnica je nagrade za najbolju voditeljku tri godine zaredom. Van kamera, Milica je strastvena o zdravom životu i redovno deli recepte i fitness savete na društvenim mrežama.",
+    tags: ["Voditeljka", "TV", "Jutarnji program", "Nagrađivana", "Zdravi život"],
+    videoTypes: [
+      { id: "vt-6-1", title: "Jutarnji pozdrav", occasion: "Pozdrav", emoji: "☀️", accentFrom: "from-amber-500", accentTo: "to-yellow-600", message: "Dobro jutro! Imam jednu posebnu poruku za tebe..." },
+      { id: "vt-6-2", title: "Čestitka za penziju", occasion: "Penzija", emoji: "🥂", accentFrom: "from-teal-500", accentTo: "to-cyan-600", message: "Čestitam na zasluženom odmoru! Uživaj..." },
+      { id: "vt-6-3", title: "Rođendanska poruka", occasion: "Rođendan", emoji: "🎂", accentFrom: "from-pink-500", accentTo: "to-rose-600", message: "Srećan rođendan! Neka ti dan bude prelep..." },
+    ],
   },
   {
     id: "cel-7",
@@ -210,6 +258,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: true,
     bio: "Reper nove generacije sa platinum albumima i hitovima koji ruše rekorde.",
     responseTime: 36,
+    extendedBio:
+      "Đorđe Milošević, poznatiji pod umetničkim imenom, je lider nove generacije srpskog hip-hop-a. Njegova muzika spaja trap zvuk sa autentičnim balkanskim elementima, stvarajući jedinstveni stil koji rezonira sa mladom publikom. Tri uzastopna albuma su dostigla platinasti tiraž, a njegova turneja po regionu je bila najposećeniji muzički događaj prošle godine. Đorđe je aktivan i na TikToku gde ima preko 2 miliona pratilaca.",
+    tags: ["Reper", "Hip-hop", "TikTok", "Platinum", "Turneja"],
+    videoTypes: [
+      { id: "vt-7-1", title: "Freestyle pozdrav", occasion: "Pozdrav", emoji: "🎤", accentFrom: "from-purple-500", accentTo: "to-violet-600", message: "Imam jednu rimu samo za tebe, slušaj..." },
+      { id: "vt-7-2", title: "Rođendanski rep", occasion: "Rođendan", emoji: "🎂", accentFrom: "from-indigo-500", accentTo: "to-blue-600", message: "Srećan rođendan, brate! Evo jedna za tebe..." },
+      { id: "vt-7-3", title: "Motivaciona poruka", occasion: "Motivacija", emoji: "💯", accentFrom: "from-slate-600", accentTo: "to-zinc-700", message: "Uvek napred, nikad nazad. Ti to možeš..." },
+    ],
   },
   {
     id: "cel-8",
@@ -223,6 +279,14 @@ export const MOCK_CELEBRITIES: Celebrity[] = [
     verified: false,
     bio: "Mlada glumica poznata po ulozi u najgledanijoj domaćoj seriji sezone.",
     responseTime: 24,
+    extendedBio:
+      "Ivana Ilić je jedna od najtalentovanijih mladih glumica u Srbiji. Njenu glavnu ulogu u hit seriji prate milioni gledalaca svake nedelje. Diplomirala je na Fakultetu dramskih umetnosti u Beogradu sa najvišim ocenama, a pre televizije je nastupala u Jugoslovenskom dramskom pozorištu. Ivana je poznata po emotivnoj dubini koju donosi svakom liku i sposobnosti da publiku nasmeje i rasplače u istoj sceni.",
+    tags: ["Glumica", "Serije", "FDU", "Pozorište", "Mlada nada"],
+    videoTypes: [
+      { id: "vt-8-1", title: "Dramatična čestitka", occasion: "Čestitka", emoji: "🎭", accentFrom: "from-rose-500", accentTo: "to-red-600", message: "Imam jednu posebnu poruku za tebe, slušaj pažljivo..." },
+      { id: "vt-8-2", title: "Rođendanska poruka", occasion: "Rođendan", emoji: "🎂", accentFrom: "from-pink-500", accentTo: "to-fuchsia-600", message: "Srećan rođendan! Neka ti nova godina bude..." },
+      { id: "vt-8-3", title: "Fan poruka", occasion: "Fan poruka", emoji: "💜", accentFrom: "from-violet-500", accentTo: "to-purple-600", message: "Hvala što me pratiš! Evo nešto samo za tebe..." },
+    ],
   },
 ];
 

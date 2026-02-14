@@ -61,3 +61,22 @@ export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength).trimEnd()}...`;
 }
+
+/**
+ * Formats a response time in hours to a human-readable Serbian string.
+ *
+ * @param hours - Response time in hours
+ * @returns Formatted string (e.g., "~12h", "~1 dan", "~3 dana")
+ *
+ * @example
+ * ```ts
+ * formatResponseTime(12)  // → "~12h"
+ * formatResponseTime(24)  // → "~1 dan"
+ * formatResponseTime(72)  // → "~3 dana"
+ * ```
+ */
+export function formatResponseTime(hours: number): string {
+  if (hours < 24) return `~${hours}h`;
+  const days = Math.round(hours / 24);
+  return `~${days} ${days === 1 ? "dan" : "dana"}`;
+}

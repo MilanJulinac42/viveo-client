@@ -13,7 +13,7 @@ import { cn, getPlaceholderImage } from "@/lib/utils";
 import Image from "next/image";
 
 /** Available avatar size options */
-type AvatarSize = "sm" | "md" | "lg" | "xl";
+type AvatarSize = "sm" | "md" | "lg" | "xl" | "2xl";
 
 interface AvatarProps {
   /** Image source URL. Falls back to placeholder if empty. */
@@ -34,6 +34,7 @@ const sizeConfig: Record<AvatarSize, { pixels: number; className: string }> = {
   md: { pixels: 48, className: "h-12 w-12" },
   lg: { pixels: 64, className: "h-16 w-16" },
   xl: { pixels: 96, className: "h-24 w-24" },
+  "2xl": { pixels: 128, className: "h-32 w-32" },
 };
 
 /** Verified badge size relative to avatar */
@@ -42,6 +43,7 @@ const badgeSizeStyles: Record<AvatarSize, string> = {
   md: "h-4 w-4 -bottom-0.5 -right-0.5",
   lg: "h-5 w-5 -bottom-0.5 -right-0.5",
   xl: "h-6 w-6 -bottom-1 -right-1",
+  "2xl": "h-7 w-7 -bottom-1 -right-1",
 };
 
 /**
