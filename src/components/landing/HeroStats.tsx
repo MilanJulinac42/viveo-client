@@ -24,7 +24,7 @@ export default function HeroStats({ stats }: HeroStatsProps) {
           key={stat.label}
           className={`text-center ${i < stats.length - 1 ? "border-r border-white/10" : ""}`}
         >
-          <p className="text-3xl font-extrabold sm:text-4xl">
+          <p className="text-2xl font-extrabold sm:text-3xl md:text-4xl">
             <AnimatedCounter
               target={stat.numericValue}
               decimals={stat.decimals ?? 0}

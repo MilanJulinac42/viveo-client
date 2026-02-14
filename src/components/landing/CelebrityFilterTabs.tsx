@@ -29,7 +29,7 @@ export default function CelebrityFilterTabs({ celebrities }: CelebrityFilterTabs
             type="button"
             onClick={() => setActiveTab(tab)}
             className={cn(
-              "rounded-full px-5 py-2 text-sm font-medium transition-all duration-300",
+              "rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300",
               activeTab === tab
                 ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
                 : "bg-white/80 text-slate-600 hover:bg-primary-50 hover:text-primary-700 border border-slate-200",

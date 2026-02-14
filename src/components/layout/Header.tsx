@@ -58,7 +58,7 @@ export default function Header() {
           {/* Mobile Hamburger */}
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+            className="inline-flex items-center justify-center rounded-lg p-2.5 text-slate-600 hover:bg-slate-100 md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Zatvori meni" : "Otvori meni"}
             aria-expanded={mobileMenuOpen}
@@ -89,7 +89,7 @@ export default function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-primary-50 hover:text-primary-500"
+                className="rounded-lg px-3 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-primary-50 hover:text-primary-500"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}

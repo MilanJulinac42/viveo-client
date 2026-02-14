@@ -126,20 +126,24 @@ export default function CelebrityCarousel({ celebrities }: CelebrityCarouselProp
       </div>
 
       {/* Dot indicators */}
-      <div className="mt-8 flex items-center justify-center gap-2">
+      <div className="mt-8 flex items-center justify-center gap-1">
         {scrollSnaps.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`Idi na slajd ${i + 1}`}
             onClick={() => scrollTo(i)}
-            className={cn(
-              "h-2.5 rounded-full transition-all duration-300",
-              i === selectedIndex
-                ? "w-8 bg-primary-500"
-                : "w-2.5 bg-slate-300 hover:bg-slate-400",
-            )}
-          />
+            className="flex h-11 min-w-11 items-center justify-center"
+          >
+            <span
+              className={cn(
+                "block h-2.5 rounded-full transition-all duration-300",
+                i === selectedIndex
+                  ? "w-8 bg-primary-500"
+                  : "w-2.5 bg-slate-300 hover:bg-slate-400",
+              )}
+            />
+          </button>
         ))}
       </div>
     </div>

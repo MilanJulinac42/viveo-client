@@ -91,12 +91,15 @@
   --color-accent-900: var(--accent-900);
 }
 
+/* Dark mode disabled — all sections use hardcoded light theme.
+   Re-enable once full dark mode support is implemented.
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0f172a;
     --foreground: #f1f5f9;
   }
 }
+*/
 
 body {
   background: var(--background);

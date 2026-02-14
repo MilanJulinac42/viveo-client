@@ -58,7 +58,7 @@ export default function HeroSection() {
               </ScrollReveal>
 
               <ScrollReveal delay={0.3}>
-                <p className="mt-8 max-w-xl text-lg leading-relaxed text-primary-100 sm:text-xl lg:mx-0">
+                <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-primary-100 sm:text-xl lg:mx-0">
                   Iznenadi nekoga posebnom video porukom od poznatih ličnosti
                   iz Srbije. Savršen poklon za rođendan, godišnjicu ili bilo
                   koju priliku.

@@ -48,7 +48,7 @@ export default function CTASection() {
           {/* Trust indicators */}
           <ScrollReveal delay={0.4}>
             <div className="relative mx-auto mt-10 max-w-2xl">
-              <div className="inline-flex w-full flex-wrap items-center justify-center gap-6 rounded-2xl border border-white/15 bg-white/10 px-8 py-4 text-sm text-primary-200 shadow-lg shadow-black/5 backdrop-blur-xl">
+              <div className="inline-flex w-full flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-4 text-sm text-primary-200 shadow-lg shadow-black/5 backdrop-blur-xl sm:gap-6 sm:px-8">
                 <span className="flex items-center gap-1.5">
                   <svg className="h-4 w-4 text-accent-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />

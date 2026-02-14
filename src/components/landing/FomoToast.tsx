@@ -37,7 +37,7 @@ export default function FomoToast() {
   const notif = currentNotif !== null ? FOMO_NOTIFICATIONS[currentNotif] : null;
 
   return (
-    <div ref={ref} className="pointer-events-none fixed bottom-6 left-6 z-50">
+    <div ref={ref} className="pointer-events-none fixed bottom-4 left-4 right-4 z-50 sm:left-6 sm:right-auto">
       <AnimatePresence>
         {notif && (
           <motion.div
@@ -46,7 +46,7 @@ export default function FomoToast() {
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/95 px-5 py-3 shadow-xl backdrop-blur-sm"
+            className="pointer-events-auto flex max-w-sm items-center gap-3 rounded-2xl border border-slate-200 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-sm sm:px-5"
           >
             <span className="text-2xl">{notif.emoji}</span>
             <div>

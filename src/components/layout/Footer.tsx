@@ -67,9 +67,9 @@ export default function Footer() {
     <footer className="border-t border-slate-100 bg-slate-50">
       <Container>
         {/* Main footer grid */}
-        <div className="grid grid-cols-2 gap-8 py-12 sm:py-16 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 sm:py-16 md:grid-cols-4 lg:grid-cols-5">
           {/* Brand column */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-2">
+          <div className="sm:col-span-2 md:col-span-4 lg:col-span-2">
             <Link href="/" className="inline-block">
               <span className="text-2xl font-bold text-primary-500">
                 Viveo
@@ -86,7 +86,7 @@ export default function Footer() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-lg shadow-sm transition-colors hover:bg-primary-50"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg shadow-sm transition-colors hover:bg-primary-50"
                 >
                   {social.icon}
                 </a>

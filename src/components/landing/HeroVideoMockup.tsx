@@ -125,13 +125,13 @@ export default function HeroVideoMockup() {
       </div>
 
       {/* Floating reaction emojis */}
-      <div className="absolute -right-4 top-1/4 animate-bounce text-2xl" style={{ animationDuration: "3s", animationDelay: "0.5s" }}>
+      <div className="absolute -right-2 top-1/4 animate-bounce text-2xl sm:-right-4" style={{ animationDuration: "3s", animationDelay: "0.5s" }}>
         🎉
       </div>
-      <div className="absolute -left-6 top-1/3 animate-bounce text-xl" style={{ animationDuration: "4s", animationDelay: "1s" }}>
+      <div className="absolute -left-3 top-1/3 animate-bounce text-xl sm:-left-6" style={{ animationDuration: "4s", animationDelay: "1s" }}>
         ❤️
       </div>
-      <div className="absolute -right-6 bottom-1/3 animate-bounce text-xl" style={{ animationDuration: "3.5s", animationDelay: "2s" }}>
+      <div className="absolute -right-3 bottom-1/3 animate-bounce text-xl sm:-right-6" style={{ animationDuration: "3.5s", animationDelay: "2s" }}>
         🌟
       </div>
     </div>

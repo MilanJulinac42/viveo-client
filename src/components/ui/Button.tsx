@@ -44,9 +44,9 @@ const variantStyles: Record<ButtonVariant, string> = {
 
 /** Tailwind classes mapped to each size */
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-6 py-2.5 text-base",
-  lg: "px-8 py-3 text-lg",
+  sm: "px-4 py-2.5 text-sm",
+  md: "px-6 py-3 text-base",
+  lg: "px-8 py-3.5 text-lg",
 };
 
 /**
