@@ -26,10 +26,11 @@ import type {
 // ---------------------------------------------------------------------------
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Kako funkcioniše", href: "#kako-funkcionise" },
-  { label: "Zvezde", href: "#zvezde" },
-  { label: "Kategorije", href: "#kategorije" },
-  { label: "Utisci", href: "#utisci" },
+  { label: "Zvezde", href: "/zvezde" },
+  { label: "Pretraga", href: "/pretraga" },
+  { label: "Postani zvezda", href: "/postani-zvezda" },
+  { label: "O nama", href: "/o-nama" },
+  { label: "Kontakt", href: "/kontakt" },
 ];
 
 // ---------------------------------------------------------------------------

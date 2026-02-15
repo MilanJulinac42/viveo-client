@@ -21,19 +21,18 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Platforma",
     links: [
-      { label: "Kako funkcioniše", href: "#kako-funkcionise" },
-      { label: "Sve zvezde", href: "#zvezde" },
-      { label: "Kategorije", href: "#kategorije" },
-      { label: "Cenovnik", href: "#" },
+      { label: "Sve zvezde", href: "/zvezde" },
+      { label: "Pretraga", href: "/pretraga" },
+      { label: "Postani zvezda", href: "/postani-zvezda" },
+      { label: "Moje porudžbine", href: "/moje-porudzbine" },
     ],
   },
   {
     title: "Kompanija",
     links: [
-      { label: "O nama", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Karijere", href: "#" },
-      { label: "Kontakt", href: "#" },
+      { label: "O nama", href: "/o-nama" },
+      { label: "Kontakt", href: "/kontakt" },
+      { label: "Zvezda panel", href: "/zvezda-panel" },
     ],
   },
   {
@@ -42,7 +41,6 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Česta pitanja", href: "#" },
       { label: "Uslovi korišćenja", href: "#" },
       { label: "Politika privatnosti", href: "#" },
-      { label: "Pomoć", href: "#" },
     ],
   },
 ];
@@ -103,12 +101,12 @@ export default function Footer() {
               <ul className="mt-4 space-y-3">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-sm text-slate-600 transition-colors hover:text-primary-500"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

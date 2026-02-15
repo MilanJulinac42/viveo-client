@@ -40,19 +40,21 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-8 md:flex">
             {NAV_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 className="text-sm font-medium text-slate-600 transition-colors hover:text-primary-500"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex">
-            <Button size="sm">Pridruži se</Button>
+            <Link href="/postani-zvezda">
+              <Button size="sm">Pridruži se</Button>
+            </Link>
           </div>
 
           {/* Mobile Hamburger */}
@@ -86,19 +88,21 @@ export default function Header() {
         >
           <nav className="flex flex-col gap-2 pt-2">
             {NAV_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 className="rounded-lg px-3 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-primary-50 hover:text-primary-500"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <div className="mt-2 px-3">
-              <Button size="sm" fullWidth>
-                Pridruži se
-              </Button>
+              <Link href="/postani-zvezda">
+                <Button size="sm" fullWidth>
+                  Pridruži se
+                </Button>
+              </Link>
             </div>
           </nav>
         </div>
