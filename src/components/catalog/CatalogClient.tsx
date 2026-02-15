@@ -23,8 +23,12 @@ interface CatalogClientProps {
   categories: Category[];
   /** Pre-selected category (e.g., "Glumci") for category pages */
   initialCategory?: string;
+  /** Pre-filled search query (e.g., for search page) */
+  initialSearch?: string;
   /** Whether to show the page header section (default: true) */
   showHeader?: boolean;
+  /** Auto-focus the search input on mount */
+  autoFocusSearch?: boolean;
 }
 
 /** Items per page for load-more pagination */
@@ -34,12 +38,14 @@ export default function CatalogClient({
   celebrities,
   categories,
   initialCategory,
+  initialSearch,
   showHeader = true,
+  autoFocusSearch = false,
 }: CatalogClientProps) {
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearch || "");
   const [activeCategory, setActiveCategory] = useState(initialCategory || "Svi");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -158,6 +164,7 @@ export default function CatalogClient({
               value={searchQuery}
               onChange={setSearchQuery}
               className="flex-1"
+              autoFocus={autoFocusSearch}
             />
             <SortSelect
               value={sortBy}

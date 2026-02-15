@@ -22,6 +22,8 @@ interface SearchInputProps {
   placeholder?: string;
   /** Additional CSS classes */
   className?: string;
+  /** Auto-focus the input on mount */
+  autoFocus?: boolean;
 }
 
 export default function SearchInput({
@@ -29,6 +31,7 @@ export default function SearchInput({
   onChange,
   placeholder = "Pretražite zvezde...",
   className,
+  autoFocus = false,
 }: SearchInputProps) {
   const [localValue, setLocalValue] = useState(value);
 
@@ -72,6 +75,7 @@ export default function SearchInput({
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         placeholder={placeholder}
+        autoFocus={autoFocus}
         className="w-full rounded-xl border border-slate-200 bg-white/80 py-3 pl-11 pr-10 text-sm text-slate-700 backdrop-blur-xl transition-all duration-200 placeholder:text-slate-400 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
       />
 
