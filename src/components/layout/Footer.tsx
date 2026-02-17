@@ -22,7 +22,6 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     title: "Platforma",
     links: [
       { label: "Sve zvezde", href: "/zvezde" },
-      { label: "Pretraga", href: "/pretraga" },
       { label: "Postani zvezda", href: "/postani-zvezda" },
       { label: "Moje porudžbine", href: "/moje-porudzbine" },
     ],

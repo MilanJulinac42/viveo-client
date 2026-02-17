@@ -27,7 +27,6 @@ import type {
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Zvezde", href: "/zvezde" },
-  { label: "Pretraga", href: "/pretraga" },
   { label: "Postani zvezda", href: "/postani-zvezda" },
   { label: "O nama", href: "/o-nama" },
   { label: "Kontakt", href: "/kontakt" },
