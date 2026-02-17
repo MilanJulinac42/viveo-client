@@ -80,8 +80,14 @@ export default function RegisterForm() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       e.email = "Unesite ispravnu email adresu";
     if (!password.trim()) e.password = "Unesite lozinku";
-    else if (password.length < 6)
-      e.password = "Lozinka mora imati najmanje 6 karaktera";
+    else if (password.length < 8)
+      e.password = "Lozinka mora imati najmanje 8 karaktera";
+    else if (!/[A-Z]/.test(password))
+      e.password = "Lozinka mora sadržati bar jedno veliko slovo";
+    else if (!/[a-z]/.test(password))
+      e.password = "Lozinka mora sadržati bar jedno malo slovo";
+    else if (!/[0-9]/.test(password))
+      e.password = "Lozinka mora sadržati bar jednu cifru";
     if (!confirmPassword.trim())
       e.confirmPassword = "Potvrdite lozinku";
     else if (password !== confirmPassword)
@@ -378,7 +384,7 @@ export default function RegisterForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onBlur={() => markTouched("password")}
-              placeholder="Najmanje 6 karaktera"
+              placeholder="Min 8 karaktera, veliko/malo slovo, cifra"
               className={cn(
                 inputClass,
                 "pr-11",
