@@ -100,14 +100,14 @@ export default function HeroVideoMockup() {
                 <span className="text-[10px] text-white/60">0:30</span>
               </div>
 
-              {/* Waveform bars */}
+              {/* Waveform bars — deterministic heights to avoid hydration mismatch */}
               <div className="flex items-end justify-center gap-[3px]">
-                {Array.from({ length: 24 }).map((_, i) => (
+                {[14,22,18,24,10,20,8,16,26,12,20,24,18,10,22,14,26,8,20,16,12,24,18,22].map((h, i) => (
                   <div
                     key={i}
                     className="w-[3px] rounded-full bg-white/40"
                     style={{
-                      height: `${8 + Math.sin(i * 0.8) * 12 + Math.random() * 8}px`,
+                      height: `${h}px`,
                       animation: `hero-wave 1.5s ease-in-out ${i * 0.05}s infinite alternate`,
                     }}
                   />
