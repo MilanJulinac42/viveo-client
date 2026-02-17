@@ -13,6 +13,7 @@ import SearchInput from "@/components/catalog/SearchInput";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import Badge from "@/components/ui/Badge";
 import RequestCard from "./RequestCard";
+import VideoUploadModal from "./VideoUploadModal";
 import type { VideoRequest, RequestStatus } from "@/lib/types";
 
 interface RequestsSectionProps {
@@ -38,6 +39,7 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
   const [searchQuery, setSearchQuery] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [uploadingRequestId, setUploadingRequestId] = useState<string | null>(null);
 
   // Filter and search logic
   const filteredRequests = useMemo(() => {
@@ -72,7 +74,7 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
   }, [requests]);
 
   // Actions with API calls
-  const handleStatusChange = useCallback(async (id: string, status: "approved" | "rejected" | "completed") => {
+  const handleStatusChange = useCallback(async (id: string, status: "approved" | "rejected") => {
     setActionLoading(id);
     setActionError(null);
     try {
@@ -80,8 +82,8 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
       setRequests((prev) =>
         prev.map((r) => (r.id === id ? { ...r, status: status as RequestStatus } : r))
       );
-    } catch (err) {
-      setActionError(`Gre\u0161ka pri a\u017euriranju zahteva. Poku\u0161ajte ponovo.`);
+    } catch {
+      setActionError("Greška pri ažuriranju zahteva. Pokušajte ponovo.");
       setTimeout(() => setActionError(null), 4000);
     } finally {
       setActionLoading(null);
@@ -90,7 +92,15 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
 
   const handleApprove = useCallback((id: string) => handleStatusChange(id, "approved"), [handleStatusChange]);
   const handleReject = useCallback((id: string) => handleStatusChange(id, "rejected"), [handleStatusChange]);
-  const handleComplete = useCallback((id: string) => handleStatusChange(id, "completed"), [handleStatusChange]);
+  const handleUploadVideo = useCallback((id: string) => setUploadingRequestId(id), []);
+  const handleUploadSuccess = useCallback(() => {
+    if (uploadingRequestId) {
+      setRequests((prev) =>
+        prev.map((r) => (r.id === uploadingRequestId ? { ...r, status: "completed" as RequestStatus } : r))
+      );
+    }
+    setUploadingRequestId(null);
+  }, [uploadingRequestId]);
 
   return (
     <div className="space-y-6">
@@ -155,7 +165,7 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
                 request={request}
                 onApprove={handleApprove}
                 onReject={handleReject}
-                onComplete={handleComplete}
+                onUploadVideo={handleUploadVideo}
                 loading={actionLoading === request.id}
               />
             </ScrollReveal>
@@ -186,6 +196,21 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
           )}
         </div>
       )}
+
+      {/* Video upload modal */}
+      {uploadingRequestId && (() => {
+        const req = requests.find((r) => r.id === uploadingRequestId);
+        if (!req) return null;
+        return (
+          <VideoUploadModal
+            requestId={uploadingRequestId}
+            buyerName={req.buyerName}
+            recipientName={req.recipientName}
+            onClose={() => setUploadingRequestId(null)}
+            onUploaded={handleUploadSuccess}
+          />
+        );
+      })()}
     </div>
   );
 }

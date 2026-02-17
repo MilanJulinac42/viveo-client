@@ -12,11 +12,12 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { DashboardClient } from "@/components/dashboard";
 
 export const metadata: Metadata = {
-  title: "Panel zvezde \u2014 Viveo",
+  title: "Panel zvezde — Viveo",
   description:
     "Upravljajte zahtevima za video poruke, pratite zaradu i podesite svoj profil na Viveo platformi.",
+  robots: { index: false, follow: false },
   openGraph: {
-    title: "Panel zvezde \u2014 Viveo",
+    title: "Panel zvezde — Viveo",
     description: "Dashboard za zvezde na Viveo platformi.",
     type: "website",
   },

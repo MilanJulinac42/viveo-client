@@ -2,7 +2,7 @@
  * @fileoverview Dashboard (Star panel) API service functions.
  */
 
-import { get, patch } from "./client";
+import { get, patch, postFormData } from "./client";
 import type {
   VideoRequest,
   EarningsSummary,
@@ -16,14 +16,30 @@ export async function getDashboardRequests(status?: string) {
   return res.data;
 }
 
-/** Update a request's status (approve/complete/reject) */
+/** Update a request's status (approve/reject) */
 export async function updateRequestStatus(
   id: string,
-  status: "approved" | "completed" | "rejected"
+  status: "approved" | "rejected"
 ) {
   const res = await patch<{ id: string; status: string }>(
     `/dashboard/requests/${id}`,
     { status }
+  );
+  return res.data;
+}
+
+/** Upload video for a request (completes the order) */
+export async function uploadVideo(
+  requestId: string,
+  file: File,
+  onProgress?: (percent: number) => void
+) {
+  const formData = new FormData();
+  formData.append("video", file);
+  const res = await postFormData<{ id: string; status: string; videoUrl: string }>(
+    `/dashboard/requests/${requestId}/video`,
+    formData,
+    onProgress
   );
   return res.data;
 }

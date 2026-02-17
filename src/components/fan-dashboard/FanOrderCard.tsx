@@ -16,6 +16,7 @@ import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import ReviewModal from "./ReviewModal";
+import VideoPlayer from "./VideoPlayer";
 import type { FanOrder, RequestStatus } from "@/lib/types";
 
 interface FanOrderCardProps {
@@ -131,6 +132,24 @@ export default function FanOrderCard({ order }: FanOrderCardProps) {
             </AnimatePresence>
           </div>
 
+          {/* Video player for completed orders */}
+          {order.status === "completed" && order.videoUrl && (
+            <VideoPlayer orderId={order.id} />
+          )}
+
+          {/* Video being prepared message */}
+          {order.status === "approved" && (
+            <div className="flex items-center gap-2 rounded-xl bg-primary-50 px-4 py-3">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary-500" />
+              </span>
+              <span className="text-sm font-medium text-primary-700">
+                Video se priprema...
+              </span>
+            </div>
+          )}
+
           {/* Row 4: Price + Status-specific info */}
           <div className="flex items-center justify-between text-sm">
             <span className="font-bold text-primary-600">{formatPrice(order.price)}</span>
@@ -138,7 +157,7 @@ export default function FanOrderCard({ order }: FanOrderCardProps) {
               <span className="text-xs font-medium text-accent-600">Video je spreman!</span>
             )}
             {order.status === "rejected" && (
-              <span className="text-xs text-slate-400">Povra\u0107aj novca u toku</span>
+              <span className="text-xs text-slate-400">Povraćaj novca u toku</span>
             )}
             {(order.status === "pending" || order.status === "approved") && (
               <span className="text-xs text-slate-400">Rok: {formattedDeadline}</span>

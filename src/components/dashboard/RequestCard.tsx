@@ -22,8 +22,8 @@ interface RequestCardProps {
   onApprove: (id: string) => void;
   /** Callback when request is rejected */
   onReject: (id: string) => void;
-  /** Callback when request is marked complete */
-  onComplete: (id: string) => void;
+  /** Callback to open video upload modal */
+  onUploadVideo: (id: string) => void;
   /** Whether an action is in progress for this card */
   loading?: boolean;
 }
@@ -51,7 +51,7 @@ export default function RequestCard({
   request,
   onApprove,
   onReject,
-  onComplete,
+  onUploadVideo,
   loading = false,
 }: RequestCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -173,10 +173,10 @@ export default function RequestCard({
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => onComplete(request.id)}
+              onClick={() => onUploadVideo(request.id)}
               disabled={loading}
             >
-              {loading ? "Sa\u010dekajte..." : "Zavr\u0161i"}
+              {loading ? "Sačekajte..." : "📹 Otpremi video"}
             </Button>
           )}
         </CardFooter>

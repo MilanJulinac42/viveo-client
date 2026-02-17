@@ -133,3 +133,56 @@ export function patch<T>(
     body: data ? JSON.stringify(data) : undefined,
   });
 }
+
+/** Upload file via FormData with progress tracking */
+export function postFormData<T>(
+  endpoint: string,
+  formData: FormData,
+  onProgress?: (percent: number) => void
+): Promise<ApiResponse<T>> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${API_BASE_URL}${endpoint}`);
+
+    const token = getToken();
+    if (token) {
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    }
+
+    if (onProgress) {
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          onProgress(Math.round((e.loaded / e.total) * 100));
+        }
+      };
+    }
+
+    xhr.onload = () => {
+      try {
+        const body = JSON.parse(xhr.responseText);
+        if (xhr.status >= 200 && xhr.status < 300 && body.success) {
+          resolve(body as ApiResponse<T>);
+        } else {
+          const err = body as ApiError;
+          reject(
+            new ApiRequestError(
+              err.error?.message || "Došlo je do greške",
+              err.error?.code || "UNKNOWN_ERROR",
+              xhr.status
+            )
+          );
+        }
+      } catch {
+        reject(
+          new ApiRequestError("Greška u odgovoru servera", "PARSE_ERROR", xhr.status)
+        );
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(new ApiRequestError("Mrežna greška", "NETWORK_ERROR", 0));
+    };
+
+    xhr.send(formData);
+  });
+}

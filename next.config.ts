@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "ui-avatars.com",
         pathname: "/api/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/**",
+      },
     ],
   },
 };

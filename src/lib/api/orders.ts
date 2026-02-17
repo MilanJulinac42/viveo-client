@@ -39,3 +39,9 @@ export async function getOrder(id: string) {
   const res = await get<FanOrder>(`/orders/${id}`);
   return res.data;
 }
+
+/** Get signed URL for video playback/download */
+export async function getVideoUrl(orderId: string) {
+  const res = await get<{ signedUrl: string }>(`/orders/${orderId}/video`);
+  return res.data;
+}

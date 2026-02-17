@@ -13,12 +13,13 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { FanDashboardClient } from "@/components/fan-dashboard";
 
 export const metadata: Metadata = {
-  title: "Moje porud\u017ebine \u2014 Viveo",
+  title: "Moje porudžbine — Viveo",
   description:
-    "Pregledajte va\u0161e narud\u017ebine personalizovanih video poruka na Viveo platformi.",
+    "Pregledajte vaše narudžbine personalizovanih video poruka na Viveo platformi.",
+  robots: { index: false, follow: false },
   openGraph: {
-    title: "Moje porud\u017ebine \u2014 Viveo",
-    description: "Pregled narud\u017ebina na Viveo platformi.",
+    title: "Moje porudžbine — Viveo",
+    description: "Pregled narudžbina na Viveo platformi.",
     type: "website",
   },
 };

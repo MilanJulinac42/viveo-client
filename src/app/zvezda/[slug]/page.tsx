@@ -18,6 +18,7 @@ import {
 } from "@/components/profile";
 import type { Metadata } from "next";
 import { getCelebrity, getCelebrityReviews, getCelebrities } from "@/lib/api/celebrities";
+import { celebrityJsonLd } from "@/lib/jsonLd";
 
 // ---------------------------------------------------------------------------
 // Dynamic metadata (SEO)
@@ -85,6 +86,12 @@ export default async function CelebrityProfilePage({ params }: PageProps) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(celebrityJsonLd(celebrity)),
+        }}
+      />
       <Header />
       <main>
         <ProfileHero celebrity={celebrity} />

@@ -207,6 +207,8 @@ export interface VideoRequest {
   createdAt: string;
   /** Deadline to fulfill (ISO string) */
   deadline: string;
+  /** URL to the uploaded video (set when status is completed) */
+  videoUrl?: string | null;
 }
 
 /** Earnings summary for a time period */
@@ -265,6 +267,8 @@ export interface FanOrder {
   createdAt: string;
   /** Deadline to fulfill (ISO string) */
   deadline: string;
+  /** URL to the uploaded video (set when status is completed) */
+  videoUrl?: string | null;
 }
 
 /** Celebrity profile settings (editable fields) */
