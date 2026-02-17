@@ -24,6 +24,8 @@ interface RequestCardProps {
   onReject: (id: string) => void;
   /** Callback when request is marked complete */
   onComplete: (id: string) => void;
+  /** Whether an action is in progress for this card */
+  loading?: boolean;
 }
 
 /** Badge variant mapping for request statuses */
@@ -50,6 +52,7 @@ export default function RequestCard({
   onApprove,
   onReject,
   onComplete,
+  loading = false,
 }: RequestCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -114,7 +117,7 @@ export default function RequestCard({
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-            {expanded ? "Sakrij instrukcije" : "Prikaži instrukcije"}
+            {expanded ? "Sakrij instrukcije" : "Prika\u017ei instrukcije"}
           </button>
 
           <AnimatePresence>
@@ -152,15 +155,17 @@ export default function RequestCard({
                 variant="ghost"
                 size="sm"
                 onClick={() => onReject(request.id)}
+                disabled={loading}
               >
-                Odbij
+                {loading ? "..." : "Odbij"}
               </Button>
               <Button
                 variant="primary"
                 size="sm"
                 onClick={() => onApprove(request.id)}
+                disabled={loading}
               >
-                Prihvati
+                {loading ? "Sa\u010dekajte..." : "Prihvati"}
               </Button>
             </>
           )}
@@ -169,8 +174,9 @@ export default function RequestCard({
               variant="secondary"
               size="sm"
               onClick={() => onComplete(request.id)}
+              disabled={loading}
             >
-              Završi
+              {loading ? "Sa\u010dekajte..." : "Zavr\u0161i"}
             </Button>
           )}
         </CardFooter>

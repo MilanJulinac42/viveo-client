@@ -1,6 +1,6 @@
 /**
  * @fileoverview Profile settings section for the celebrity dashboard.
- * Allows editing name, bio, tags, price, response time, and availability toggle.
+ * Allows editing name, bio, tags, price, response time with API save.
  */
 
 "use client";
@@ -8,6 +8,7 @@
 import { useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { updateDashboardProfile } from "@/lib/api/dashboard";
 import { Card, CardBody } from "@/components/ui/Card";
 import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
@@ -38,6 +39,8 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
   const [acceptingRequests, setAcceptingRequests] = useState(true);
   const [tagInput, setTagInput] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAddTag = useCallback(() => {
     const trimmed = tagInput.trim();
@@ -51,10 +54,28 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
     setTags((prev) => prev.filter((t) => t !== tag));
   }, []);
 
-  const handleSave = useCallback(() => {
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-  }, []);
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      await updateDashboardProfile({
+        name,
+        bio,
+        extendedBio,
+        price,
+        responseTime,
+        tags,
+        acceptingRequests,
+      });
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch {
+      setError("Gre\u0161ka pri \u010duvanju profila. Poku\u0161ajte ponovo.");
+      setTimeout(() => setError(null), 4000);
+    } finally {
+      setSaving(false);
+    }
+  }, [name, bio, extendedBio, price, responseTime, tags, acceptingRequests]);
 
   const handleReset = useCallback(() => {
     setName(celebrity.name);
@@ -70,7 +91,7 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Podešavanja profila</h2>
+        <h2 className="text-2xl font-bold text-slate-900">Pode\u0161avanja profila</h2>
         <p className="mt-1 text-sm text-slate-500">
           Uredite kako vas fanovi vide na platformi
         </p>
@@ -85,7 +106,21 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
             exit={{ opacity: 0, y: -10 }}
             className="rounded-xl bg-accent-50 border border-accent-200 px-4 py-3 text-sm font-medium text-accent-700"
           >
-            ✓ Promene su uspešno sačuvane!
+            &#10003; Promene su uspe\u0161no sa\u010duvane!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Error toast */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-medium text-red-700"
+          >
+            {error}
           </motion.div>
         )}
       </AnimatePresence>
@@ -104,7 +139,7 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
               <h3 className="text-xl font-bold text-slate-900">{name}</h3>
               <Badge variant="primary" size="sm">{celebrity.category}</Badge>
               <p className="mt-2 text-sm text-slate-500">
-                Promena slike profila — uskoro
+                Promena slike profila &mdash; uskoro
               </p>
             </div>
           </CardBody>
@@ -174,7 +209,7 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
                       onClick={() => handleRemoveTag(tag)}
                       className="ml-1 text-primary-400 hover:text-primary-600"
                     >
-                      ×
+                      &times;
                     </button>
                   </Badge>
                 ))}
@@ -243,7 +278,7 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
             <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-4 py-4">
               <div>
                 <p className="text-sm font-medium text-slate-700">Prihvatam zahteve</p>
-                <p className="text-xs text-slate-400">Kada je isključeno, niko ne može da vam pošalje zahtev</p>
+                <p className="text-xs text-slate-400">Kada je isklju\u010deno, niko ne mo\u017ee da vam po\u0161alje zahtev</p>
               </div>
               <button
                 type="button"
@@ -269,11 +304,11 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
 
       {/* Save / Cancel */}
       <div className="flex items-center justify-end gap-3">
-        <Button variant="ghost" onClick={handleReset}>
-          Poništi izmene
+        <Button variant="ghost" onClick={handleReset} disabled={saving}>
+          Poni\u0161ti izmene
         </Button>
-        <Button variant="primary" onClick={handleSave}>
-          Sačuvaj promene
+        <Button variant="primary" onClick={handleSave} disabled={saving}>
+          {saving ? "\u010cuvanje..." : "Sa\u010duvaj promene"}
         </Button>
       </div>
     </div>

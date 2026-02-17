@@ -6,9 +6,11 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn, formatPrice, formatResponseTime } from "@/lib/utils";
+import { createOrder } from "@/lib/api/orders";
+import { ApiRequestError } from "@/lib/api";
 import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import VideoTypeCard from "./VideoTypeCard";
@@ -41,6 +43,7 @@ export default function OrderForm({ celebrity }: OrderFormProps) {
   // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [apiError, setApiError] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // Validation
@@ -63,7 +66,6 @@ export default function OrderForm({ celebrity }: OrderFormProps) {
   }, []);
 
   const handleSubmit = useCallback(async () => {
-    // Mark all fields as touched
     setTouched({
       videoType: true,
       recipientName: true,
@@ -71,16 +73,36 @@ export default function OrderForm({ celebrity }: OrderFormProps) {
       buyerEmail: true,
       instructions: true,
     });
+    setApiError("");
 
-    if (!isValid) return;
+    if (!isValid || !selectedVideoType) return;
 
     setIsSubmitting(true);
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [isValid]);
+    try {
+      await createOrder({
+        celebritySlug: celebrity.slug,
+        videoTypeId: selectedVideoType.id,
+        recipientName,
+        buyerName,
+        buyerEmail,
+        instructions,
+      });
+      setIsSuccess(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        if (err.status === 401) {
+          setApiError("Morate biti prijavljeni da biste naručili video poruku.");
+        } else {
+          setApiError(err.message);
+        }
+      } else {
+        setApiError("Došlo je do greške. Pokušajte ponovo.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isValid, selectedVideoType, celebrity.slug, recipientName, buyerName, buyerEmail, instructions]);
 
   // -----------------------------------------------------------------------
   // Success State
@@ -338,6 +360,12 @@ export default function OrderForm({ celebrity }: OrderFormProps) {
               </span>
             </div>
           </div>
+
+          {apiError && (
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              {apiError}
+            </div>
+          )}
 
           <Button
             variant="primary"

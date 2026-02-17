@@ -1,7 +1,7 @@
 /**
  * @fileoverview Fan order card for the fan dashboard.
  * Shows celebrity info, order details, expandable instructions,
- * and status-specific actions from the buyer perspective.
+ * status-specific actions, and review button for completed orders.
  */
 
 "use client";
@@ -15,6 +15,7 @@ import { Card, CardBody, CardFooter } from "@/components/ui/Card";
 import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import ReviewModal from "./ReviewModal";
 import type { FanOrder, RequestStatus } from "@/lib/types";
 
 interface FanOrderCardProps {
@@ -39,10 +40,12 @@ const statusGradient: Record<RequestStatus, string> = {
 };
 
 /**
- * Fan dashboard order card with expandable instructions and status-specific actions.
+ * Fan dashboard order card with expandable instructions and review functionality.
  */
 export default function FanOrderCard({ order }: FanOrderCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+  const [reviewed, setReviewed] = useState(false);
 
   const deadlineDate = new Date(order.deadline);
   const formattedDeadline = deadlineDate.toLocaleDateString("sr-RS", {
@@ -57,104 +60,124 @@ export default function FanOrderCard({ order }: FanOrderCardProps) {
   });
 
   return (
-    <Card glass hoverable>
-      {/* Status accent strip */}
-      <div className={`h-1 bg-gradient-to-r ${statusGradient[order.status]}`} />
+    <>
+      <Card glass hoverable>
+        {/* Status accent strip */}
+        <div className={`h-1 bg-gradient-to-r ${statusGradient[order.status]}`} />
 
-      <CardBody className="space-y-3 py-4">
-        {/* Row 1: Celebrity info + status */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <Avatar src={order.celebrityImage} alt={order.celebrityName} size="sm" />
-            <div className="min-w-0">
-              <Link
-                href={`/zvezda/${order.celebritySlug}`}
-                className="truncate text-sm font-semibold text-slate-900 hover:text-primary-600 transition-colors"
-              >
-                {order.celebrityName}
-              </Link>
-              <p className="text-xs text-slate-400">{formattedCreated}</p>
+        <CardBody className="space-y-3 py-4">
+          {/* Row 1: Celebrity info + status */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar src={order.celebrityImage} alt={order.celebrityName} size="sm" />
+              <div className="min-w-0">
+                <Link
+                  href={`/zvezda/${order.celebritySlug}`}
+                  className="truncate text-sm font-semibold text-slate-900 hover:text-primary-600 transition-colors"
+                >
+                  {order.celebrityName}
+                </Link>
+                <p className="text-xs text-slate-400">{formattedCreated}</p>
+              </div>
             </div>
+            <Badge variant={statusVariant[order.status]} size="sm">
+              {STATUS_LABELS[order.status]}
+            </Badge>
           </div>
-          <Badge variant={statusVariant[order.status]} size="sm">
-            {STATUS_LABELS[order.status]}
-          </Badge>
-        </div>
 
-        {/* Row 2: Video type + recipient */}
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="font-medium text-slate-700">{order.videoType}</span>
-          <span className="text-slate-300">&bull;</span>
-          <span className="text-slate-500">za {order.recipientName}</span>
-        </div>
+          {/* Row 2: Video type + recipient */}
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="font-medium text-slate-700">{order.videoType}</span>
+            <span className="text-slate-300">&bull;</span>
+            <span className="text-slate-500">za {order.recipientName}</span>
+          </div>
 
-        {/* Row 3: Instructions (expandable) */}
-        <div>
-          <button
-            type="button"
-            onClick={() => setExpanded(!expanded)}
-            className="flex w-full items-center gap-1.5 text-left text-sm text-primary-600 hover:text-primary-700 transition-colors"
-          >
-            <svg
-              className={cn(
-                "h-4 w-4 shrink-0 transition-transform duration-200",
-                expanded && "rotate-90"
-              )}
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
+          {/* Row 3: Instructions (expandable) */}
+          <div>
+            <button
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+              className="flex w-full items-center gap-1.5 text-left text-sm text-primary-600 hover:text-primary-700 transition-colors"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-            {expanded ? "Sakrij instrukcije" : "Prikaži instrukcije"}
-          </button>
-
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" as const }}
-                className="overflow-hidden"
+              <svg
+                className={cn(
+                  "h-4 w-4 shrink-0 transition-transform duration-200",
+                  expanded && "rotate-90"
+                )}
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
               >
-                <p className="mt-2 rounded-xl bg-slate-50 p-3 text-sm leading-relaxed text-slate-600">
-                  &ldquo;{order.instructions}&rdquo;
-                </p>
-              </motion.div>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+              {expanded ? "Sakrij instrukcije" : "Prika\u017ei instrukcije"}
+            </button>
+
+            <AnimatePresence>
+              {expanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" as const }}
+                  className="overflow-hidden"
+                >
+                  <p className="mt-2 rounded-xl bg-slate-50 p-3 text-sm leading-relaxed text-slate-600">
+                    &ldquo;{order.instructions}&rdquo;
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Row 4: Price + Status-specific info */}
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-bold text-primary-600">{formatPrice(order.price)}</span>
+            {order.status === "completed" && (
+              <span className="text-xs font-medium text-accent-600">Video je spreman!</span>
             )}
-          </AnimatePresence>
-        </div>
+            {order.status === "rejected" && (
+              <span className="text-xs text-slate-400">Povra\u0107aj novca u toku</span>
+            )}
+            {(order.status === "pending" || order.status === "approved") && (
+              <span className="text-xs text-slate-400">Rok: {formattedDeadline}</span>
+            )}
+          </div>
+        </CardBody>
 
-        {/* Row 4: Price + Status-specific info */}
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-bold text-primary-600">{formatPrice(order.price)}</span>
-          {order.status === "completed" && (
-            <span className="text-xs font-medium text-accent-600">Video je spreman!</span>
-          )}
-          {order.status === "rejected" && (
-            <span className="text-xs text-slate-400">Povraćaj novca u toku</span>
-          )}
-          {(order.status === "pending" || order.status === "approved") && (
-            <span className="text-xs text-slate-400">Rok: {formattedDeadline}</span>
-          )}
-        </div>
-      </CardBody>
+        {/* Footer: actions for completed orders */}
+        {order.status === "completed" && (
+          <CardFooter className="flex items-center justify-end gap-2">
+            {!reviewed ? (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setShowReview(true)}
+              >
+                &#9733; Ostavi recenziju
+              </Button>
+            ) : (
+              <span className="text-xs font-medium text-accent-600">&#10003; Recenzija ostavljena</span>
+            )}
+            <Link href={`/naruci/${order.celebritySlug}`}>
+              <Button variant="ghost" size="sm">
+                Naru\u010di ponovo
+              </Button>
+            </Link>
+          </CardFooter>
+        )}
+      </Card>
 
-      {/* Footer: actions for completed orders */}
-      {order.status === "completed" && (
-        <CardFooter className="flex items-center justify-end gap-2">
-          <Link href={`/naruci/${order.celebritySlug}`}>
-            <Button variant="ghost" size="sm">
-              Naruči ponovo
-            </Button>
-          </Link>
-          <Button variant="outline" size="sm">
-            Pogledaj video
-          </Button>
-        </CardFooter>
+      {/* Review Modal */}
+      {showReview && (
+        <ReviewModal
+          orderId={order.id}
+          celebrityName={order.celebrityName}
+          onClose={() => setShowReview(false)}
+          onSubmitted={() => setReviewed(true)}
+        />
       )}
-    </Card>
+    </>
   );
 }

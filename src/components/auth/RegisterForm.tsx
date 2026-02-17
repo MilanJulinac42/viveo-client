@@ -13,7 +13,10 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { ApiRequestError } from "@/lib/api";
 import Button from "@/components/ui/Button";
 
 /** Shared input class for consistent styling */
@@ -51,6 +54,8 @@ export default function RegisterForm() {
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
+  const router = useRouter();
+  const { register } = useAuth();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -60,6 +65,7 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [apiError, setApiError] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // ---------------------------------------------------------------------------
@@ -101,13 +107,23 @@ export default function RegisterForm() {
       confirmPassword: true,
       acceptTerms: true,
     });
+    setApiError("");
     if (!isValid) return;
 
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-  }, [isValid]);
+    try {
+      await register({ fullName, email, password, accountType });
+      setIsSuccess(true);
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        setApiError(err.message);
+      } else {
+        setApiError("Došlo je do greške. Pokušajte ponovo.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isValid, fullName, email, password, accountType, register]);
 
   // ---------------------------------------------------------------------------
   // Success state
@@ -161,21 +177,21 @@ export default function RegisterForm() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           {accountType === "star" ? (
             <>
-              <Link href="/zvezda-panel">
-                <Button variant="primary">Zvezda panel</Button>
-              </Link>
-              <Link href="/zvezde">
-                <Button variant="outline">Pregledaj platformu</Button>
-              </Link>
+              <Button variant="primary" onClick={() => router.push("/zvezda-panel")}>
+                Zvezda panel
+              </Button>
+              <Button variant="outline" onClick={() => router.push("/zvezde")}>
+                Pregledaj platformu
+              </Button>
             </>
           ) : (
             <>
-              <Link href="/zvezde">
-                <Button variant="primary">Pregledaj zvezde</Button>
-              </Link>
-              <Link href="/moje-porudzbine">
-                <Button variant="outline">Moje porudžbine</Button>
-              </Link>
+              <Button variant="primary" onClick={() => router.push("/zvezde")}>
+                Pregledaj zvezde
+              </Button>
+              <Button variant="outline" onClick={() => router.push("/moje-porudzbine")}>
+                Moje porudžbine
+              </Button>
             </>
           )}
         </div>
@@ -246,6 +262,13 @@ export default function RegisterForm() {
 
       {/* Form fields */}
       <div className="space-y-5">
+        {/* API error */}
+        {apiError && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {apiError}
+          </div>
+        )}
+
         {/* Account type selector */}
         <div>
           <label className="mb-2 block text-sm font-medium text-slate-700">

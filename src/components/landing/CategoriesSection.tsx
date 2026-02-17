@@ -1,12 +1,6 @@
 /**
  * @fileoverview Browse-by-category section with a rich purple gradient background.
- * Uses CurvedDivider for smooth organic transitions from the white section above
- * and into the slate-50 testimonials section below.
- *
- * @example
- * ```tsx
- * <CategoriesSection />
- * ```
+ * Fetches categories from API; falls back to mock data.
  */
 
 import Container from "@/components/layout/Container";
@@ -15,6 +9,7 @@ import FloatingElements from "@/components/ui/FloatingElements";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import SpotlightCursor from "@/components/ui/SpotlightCursor";
 import TiltCategoryCard from "./TiltCategoryCard";
+import { getCategories } from "@/lib/api/categories";
 import { MOCK_CATEGORIES, TRENDING_CATEGORIES } from "@/lib/constants";
 
 /** Alternating colored accent strips on top of each card */
@@ -27,13 +22,17 @@ const cardAccents = [
   "from-secondary-400 to-accent-400",
 ];
 
-/**
- * Category browsing section with vibrant gradient background, curved edges,
- * and a responsive grid of colourful, hoverable category cards.
- *
- * @returns Gradient purple section with curved edges and category card grid
- */
-export default function CategoriesSection() {
+export default async function CategoriesSection() {
+  let categories = MOCK_CATEGORIES;
+  try {
+    const apiCategories = await getCategories();
+    if (apiCategories.length > 0) {
+      categories = apiCategories;
+    }
+  } catch {
+    // Fallback to mock data if API is unavailable
+  }
+
   return (
     <section id="kategorije" className="relative">
       {/* Curved top — gradient island rising from white */}
@@ -52,7 +51,7 @@ export default function CategoriesSection() {
           <ScrollReveal>
             <div className="relative mb-14 text-center text-white">
               <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-                Pretraži po kategoriji
+                Pretra&#382;i po kategoriji
               </h2>
               <div className="mx-auto mt-4 flex items-center justify-center gap-1.5">
                 <span className="h-1 w-6 rounded-full bg-white/30" />
@@ -60,14 +59,14 @@ export default function CategoriesSection() {
                 <span className="h-1 w-6 rounded-full bg-white/30" />
               </div>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-primary-200">
-                Pronađi savršenu zvezdu po oblasti
+                Prona&#273;i savr&#353;enu zvezdu po oblasti
               </p>
             </div>
           </ScrollReveal>
 
           {/* Category cards — 6 cols on desktop, compact cards */}
           <div className="relative grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-            {MOCK_CATEGORIES.map((category, i) => (
+            {categories.map((category, i) => (
               <ScrollReveal key={category.id} delay={0.1 * i}>
                 <TiltCategoryCard category={category} accentClass={cardAccents[i % cardAccents.length]} trending={TRENDING_CATEGORIES.includes(category.slug)} />
               </ScrollReveal>

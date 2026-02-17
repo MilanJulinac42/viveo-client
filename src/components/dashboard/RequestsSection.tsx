@@ -1,6 +1,6 @@
 /**
  * @fileoverview Requests management section for the celebrity dashboard.
- * Provides filtering by status, search, and action buttons for each request.
+ * Provides filtering by status, search, and action buttons with API integration.
  */
 
 "use client";
@@ -8,6 +8,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { STATUS_LABELS } from "@/lib/constants";
+import { updateRequestStatus } from "@/lib/api/dashboard";
 import SearchInput from "@/components/catalog/SearchInput";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import Badge from "@/components/ui/Badge";
@@ -22,9 +23,9 @@ interface RequestsSectionProps {
 /** Filter tab configuration */
 const FILTER_TABS: { label: string; value: RequestStatus | "all" }[] = [
   { label: "Svi", value: "all" },
-  { label: "Na čekanju", value: "pending" },
-  { label: "Prihvaćeni", value: "approved" },
-  { label: "Završeni", value: "completed" },
+  { label: "Na \u010dekanju", value: "pending" },
+  { label: "Prihva\u0107eni", value: "approved" },
+  { label: "Zavr\u0161eni", value: "completed" },
   { label: "Odbijeni", value: "rejected" },
 ];
 
@@ -35,6 +36,8 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
   const [requests, setRequests] = useState(initialRequests);
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Filter and search logic
   const filteredRequests = useMemo(() => {
@@ -68,24 +71,26 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
     return counts;
   }, [requests]);
 
-  // Actions
-  const handleApprove = useCallback((id: string) => {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "approved" as RequestStatus } : r))
-    );
+  // Actions with API calls
+  const handleStatusChange = useCallback(async (id: string, status: "approved" | "rejected" | "completed") => {
+    setActionLoading(id);
+    setActionError(null);
+    try {
+      await updateRequestStatus(id, status);
+      setRequests((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, status: status as RequestStatus } : r))
+      );
+    } catch (err) {
+      setActionError(`Gre\u0161ka pri a\u017euriranju zahteva. Poku\u0161ajte ponovo.`);
+      setTimeout(() => setActionError(null), 4000);
+    } finally {
+      setActionLoading(null);
+    }
   }, []);
 
-  const handleReject = useCallback((id: string) => {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "rejected" as RequestStatus } : r))
-    );
-  }, []);
-
-  const handleComplete = useCallback((id: string) => {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "completed" as RequestStatus } : r))
-    );
-  }, []);
+  const handleApprove = useCallback((id: string) => handleStatusChange(id, "approved"), [handleStatusChange]);
+  const handleReject = useCallback((id: string) => handleStatusChange(id, "rejected"), [handleStatusChange]);
+  const handleComplete = useCallback((id: string) => handleStatusChange(id, "completed"), [handleStatusChange]);
 
   return (
     <div className="space-y-6">
@@ -97,12 +102,19 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
         </p>
       </div>
 
+      {/* Error message */}
+      {actionError && (
+        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-medium text-red-700">
+          {actionError}
+        </div>
+      )}
+
       {/* Search + Filter bar */}
       <div className="space-y-4">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder="Pretraži po imenu, primaocu ili tipu..."
+          placeholder="Pretra\u017ei po imenu, primaocu ili tipu..."
         />
 
         {/* Status filter tabs */}
@@ -144,6 +156,7 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
                 onApprove={handleApprove}
                 onReject={handleReject}
                 onComplete={handleComplete}
+                loading={actionLoading === request.id}
               />
             </ScrollReveal>
           ))}
@@ -151,13 +164,13 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
       ) : (
         /* Empty state */
         <div className="py-16 text-center">
-          <span className="text-5xl">📭</span>
+          <span className="text-5xl">&#128237;</span>
           <h3 className="mt-4 text-lg font-bold text-slate-900">
             Nema zahteva
           </h3>
           <p className="mt-2 text-sm text-slate-500">
             {searchQuery || statusFilter !== "all"
-              ? "Pokušajte sa drugačijim filterima ili pretragom."
+              ? "Poku\u0161ajte sa druga\u010dijim filterima ili pretragom."
               : "Trenutno nemate aktivnih zahteva za video poruke."}
           </p>
           {(searchQuery || statusFilter !== "all") && (
@@ -168,7 +181,7 @@ export default function RequestsSection({ requests: initialRequests }: RequestsS
               }}
               className="mt-4 text-sm font-medium text-primary-600 hover:text-primary-700"
             >
-              Obriši filtere
+              Obri\u0161i filtere
             </button>
           )}
         </div>

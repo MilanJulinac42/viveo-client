@@ -1,13 +1,11 @@
 /**
- * @fileoverview Celebrity profile page with SSG support.
- * Displays complete celebrity profile including hero, about, video showcase,
- * reviews, and similar celebrities sections.
+ * @fileoverview Celebrity profile page.
+ * Fetches celebrity data from API and displays profile sections.
  *
  * @route /zvezda/[slug]
  */
 
 import { notFound } from "next/navigation";
-import { MOCK_CELEBRITIES, MOCK_TESTIMONIALS } from "@/lib/constants";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import {
@@ -19,14 +17,7 @@ import {
   StickyBottomCTA,
 } from "@/components/profile";
 import type { Metadata } from "next";
-
-// ---------------------------------------------------------------------------
-// Static params (SSG)
-// ---------------------------------------------------------------------------
-
-export function generateStaticParams() {
-  return MOCK_CELEBRITIES.map((c) => ({ slug: c.slug }));
-}
+import { getCelebrity, getCelebrityReviews, getCelebrities } from "@/lib/api/celebrities";
 
 // ---------------------------------------------------------------------------
 // Dynamic metadata (SEO)
@@ -38,23 +29,22 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const celebrity = MOCK_CELEBRITIES.find((c) => c.slug === slug);
-
-  if (!celebrity) {
+  try {
+    const celebrity = await getCelebrity(slug);
+    return {
+      title: `${celebrity.name} — Naruči video poruku | Viveo`,
+      description:
+        celebrity.extendedBio ||
+        `Naruči personalizovanu video poruku od ${celebrity.name}. ${celebrity.bio}`,
+      openGraph: {
+        title: `${celebrity.name} — Viveo`,
+        description: `Personalizovana video poruka od ${celebrity.name} — ${celebrity.category}`,
+        type: "profile",
+      },
+    };
+  } catch {
     return { title: "Zvezda nije pronađena — Viveo" };
   }
-
-  return {
-    title: `${celebrity.name} — Naruči video poruku | Viveo`,
-    description:
-      celebrity.extendedBio ||
-      `Naruči personalizovanu video poruku od ${celebrity.name}. ${celebrity.bio}`,
-    openGraph: {
-      title: `${celebrity.name} — Viveo`,
-      description: `Personalizovana video poruka od ${celebrity.name} — ${celebrity.category}`,
-      type: "profile",
-    },
-  };
 }
 
 // ---------------------------------------------------------------------------
@@ -63,28 +53,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CelebrityProfilePage({ params }: PageProps) {
   const { slug } = await params;
-  const celebrity = MOCK_CELEBRITIES.find((c) => c.slug === slug);
 
-  if (!celebrity) notFound();
+  let celebrity;
+  try {
+    celebrity = await getCelebrity(slug);
+  } catch {
+    notFound();
+  }
 
-  // Get reviews for this celebrity
-  const reviews = MOCK_TESTIMONIALS.filter(
-    (t) => t.celebrityName === celebrity.name
-  );
+  // Fetch reviews and similar celebrities in parallel
+  const [reviews, similarRes] = await Promise.all([
+    getCelebrityReviews(slug).catch(() => []),
+    getCelebrities({ category: celebrity.category, pageSize: 5 }).catch(() => ({ data: [] as never[], meta: undefined })),
+  ]);
 
-  // Get similar celebrities (same category, exclude current)
-  let similar = MOCK_CELEBRITIES.filter(
-    (c) => c.category === celebrity.category && c.slug !== celebrity.slug
-  );
-
-  // If fewer than 4, fill from other categories
+  // Exclude current celebrity, take up to 4
+  let similar = similarRes.data.filter((c) => c.slug !== celebrity.slug);
   if (similar.length < 4) {
-    const others = MOCK_CELEBRITIES.filter(
-      (c) =>
-        c.slug !== celebrity.slug &&
-        !similar.some((s) => s.id === c.id)
-    );
-    similar = [...similar, ...others].slice(0, 4);
+    try {
+      const othersRes = await getCelebrities({ pageSize: 8 });
+      const others = othersRes.data.filter(
+        (c) => c.slug !== celebrity.slug && !similar.some((s) => s.id === c.id)
+      );
+      similar = [...similar, ...others].slice(0, 4);
+    } catch {
+      // Keep what we have
+    }
+  } else {
+    similar = similar.slice(0, 4);
   }
 
   return (

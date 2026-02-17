@@ -13,7 +13,10 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { ApiRequestError } from "@/lib/api";
 import Button from "@/components/ui/Button";
 
 /** Shared input class for consistent styling */
@@ -33,11 +36,14 @@ export default function LoginForm() {
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
+  const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [apiError, setApiError] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // ---------------------------------------------------------------------------
@@ -65,13 +71,23 @@ export default function LoginForm() {
   // ---------------------------------------------------------------------------
   const handleSubmit = useCallback(async () => {
     setTouched({ email: true, password: true });
+    setApiError("");
     if (!isValid) return;
 
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-  }, [isValid]);
+    try {
+      await login({ email, password });
+      setIsSuccess(true);
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        setApiError(err.message);
+      } else {
+        setApiError("Došlo je do greške. Pokušajte ponovo.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isValid, email, password, login]);
 
   // ---------------------------------------------------------------------------
   // Success state
@@ -121,12 +137,12 @@ export default function LoginForm() {
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link href="/zvezde">
-            <Button variant="primary">Pregledaj zvezde</Button>
-          </Link>
-          <Link href="/moje-porudzbine">
-            <Button variant="outline">Moje porudžbine</Button>
-          </Link>
+          <Button variant="primary" onClick={() => router.push("/zvezde")}>
+            Pregledaj zvezde
+          </Button>
+          <Button variant="outline" onClick={() => router.push("/moje-porudzbine")}>
+            Moje porudžbine
+          </Button>
         </div>
       </motion.div>
     );
@@ -191,6 +207,13 @@ export default function LoginForm() {
 
       {/* Form fields */}
       <div className="space-y-5">
+        {/* API error */}
+        {apiError && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {apiError}
+          </div>
+        )}
+
         {/* Email */}
         <div>
           <label

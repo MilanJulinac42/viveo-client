@@ -1,12 +1,11 @@
 /**
  * @fileoverview Main dashboard orchestrator component.
- * Manages active tab state and renders sidebar + content sections.
- * Desktop: sidebar + content area. Mobile: top tabs + content.
+ * Fetches dashboard data from API and manages tab navigation.
  */
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Container from "@/components/layout/Container";
 import DashboardSidebar from "./DashboardSidebar";
@@ -14,6 +13,13 @@ import RequestsSection from "./RequestsSection";
 import EarningsSection from "./EarningsSection";
 import ProfileSettingsSection from "./ProfileSettingsSection";
 import CalendarSection from "./CalendarSection";
+import {
+  getDashboardRequests,
+  getDashboardEarnings,
+  getDashboardAvailability,
+} from "@/lib/api/dashboard";
+import { getCelebrity } from "@/lib/api/celebrities";
+import { useAuth } from "@/context/AuthContext";
 import type {
   Celebrity,
   VideoRequest,
@@ -21,17 +27,6 @@ import type {
   AvailabilitySlot,
   DashboardTab,
 } from "@/lib/types";
-
-interface DashboardClientProps {
-  /** Celebrity (logged-in user) data */
-  celebrity: Celebrity;
-  /** Video requests */
-  requests: VideoRequest[];
-  /** Earnings summary */
-  earnings: EarningsSummary;
-  /** Weekly availability */
-  availability: AvailabilitySlot[];
-}
 
 /** Mobile tab configuration */
 const MOBILE_TABS: { tab: DashboardTab; label: string; emoji: string }[] = [
@@ -41,35 +36,86 @@ const MOBILE_TABS: { tab: DashboardTab; label: string; emoji: string }[] = [
   { tab: "calendar", label: "Kalendar", emoji: "📅" },
 ];
 
-/**
- * Dashboard master orchestrator.
- * Renders sidebar (desktop) or tab bar (mobile) + active section content.
- *
- * @param props - Celebrity data, requests, earnings, and availability
- * @returns Dashboard layout
- */
-export default function DashboardClient({
-  celebrity,
-  requests,
-  earnings,
-  availability,
-}: DashboardClientProps) {
+export default function DashboardClient() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<DashboardTab>("requests");
+  const [loading, setLoading] = useState(true);
+  const [celebrity, setCelebrity] = useState<Celebrity | null>(null);
+  const [requests, setRequests] = useState<VideoRequest[]>([]);
+  const [earnings, setEarnings] = useState<EarningsSummary | null>(null);
+  const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [reqData, earnData, availData] = await Promise.all([
+          getDashboardRequests().catch(() => []),
+          getDashboardEarnings().catch(() => null),
+          getDashboardAvailability().catch(() => []),
+        ]);
+        setRequests(reqData);
+        setEarnings(earnData);
+        setAvailability(availData);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <Container size="full">
+        <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500" />
+            <p className="mt-4 text-sm text-slate-500">Učitavanje panela...</p>
+          </div>
+        </div>
+      </Container>
+    );
+  }
+
+  // Build a minimal celebrity object from auth user for sidebar
+  const celebrityData: Celebrity = celebrity || {
+    id: user?.id || "",
+    name: user?.fullName || "Zvezda",
+    slug: "",
+    image: user?.avatarUrl || "",
+    category: "",
+    price: 0,
+    rating: earnings?.averageRating || 0,
+    reviewCount: 0,
+    verified: true,
+    bio: "",
+    responseTime: 24,
+  };
+
+  const defaultEarnings: EarningsSummary = earnings || {
+    totalEarnings: 0,
+    completedRequests: 0,
+    pendingRequests: 0,
+    averageRating: 0,
+    weeklyEarnings: [],
+    monthlyEarnings: [],
+    earningsByType: [],
+  };
 
   return (
     <Container size="full">
       <div className="flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row">
         {/* Desktop sidebar */}
         <DashboardSidebar
-          celebrity={celebrity}
+          celebrity={celebrityData}
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          earnings={earnings}
+          earnings={defaultEarnings}
         />
 
         {/* Main content area */}
         <div className="flex-1 p-4 sm:p-6 lg:p-8">
-          {/* Mobile tab bar (hidden on lg+) */}
+          {/* Mobile tab bar */}
           <div className="mb-6 lg:hidden">
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
               {MOBILE_TABS.map((tab) => (
@@ -93,10 +139,10 @@ export default function DashboardClient({
           {/* Active section */}
           {activeTab === "requests" && <RequestsSection requests={requests} />}
           {activeTab === "earnings" && (
-            <EarningsSection earnings={earnings} celebrity={celebrity} />
+            <EarningsSection earnings={defaultEarnings} celebrity={celebrityData} />
           )}
           {activeTab === "profile" && (
-            <ProfileSettingsSection celebrity={celebrity} />
+            <ProfileSettingsSection celebrity={celebrityData} />
           )}
           {activeTab === "calendar" && (
             <CalendarSection availability={availability} />

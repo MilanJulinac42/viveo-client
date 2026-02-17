@@ -1,6 +1,6 @@
 /**
  * @fileoverview Fan dashboard page for viewing order history.
- * Displays all orders the logged-in fan has placed.
+ * Protected route — redirects unauthenticated users to login.
  *
  * @route /moje-porudzbine
  */
@@ -9,15 +9,16 @@ import type { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/layout/Container";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { FanDashboardClient } from "@/components/fan-dashboard";
 
 export const metadata: Metadata = {
-  title: "Moje porudžbine — Viveo",
+  title: "Moje porud\u017ebine \u2014 Viveo",
   description:
-    "Pregledajte vaše narudžbine personalizovanih video poruka na Viveo platformi.",
+    "Pregledajte va\u0161e narud\u017ebine personalizovanih video poruka na Viveo platformi.",
   openGraph: {
-    title: "Moje porudžbine — Viveo",
-    description: "Pregled narudžbina na Viveo platformi.",
+    title: "Moje porud\u017ebine \u2014 Viveo",
+    description: "Pregled narud\u017ebina na Viveo platformi.",
     type: "website",
   },
 };
@@ -27,9 +28,11 @@ export default function MojePorudzbinePage() {
     <>
       <Header />
       <main className="min-h-screen bg-slate-50">
-        <Container>
-          <FanDashboardClient />
-        </Container>
+        <ProtectedRoute>
+          <Container>
+            <FanDashboardClient />
+          </Container>
+        </ProtectedRoute>
       </main>
       <Footer />
     </>

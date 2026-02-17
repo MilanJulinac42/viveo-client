@@ -1,6 +1,6 @@
 /**
  * @fileoverview Featured celebrities section with filter tabs and autoplay carousel.
- * Clean slate background — neutral tone lets cards stand out.
+ * Fetches popular celebrities from API; falls back to mock data.
  */
 
 import Container from "@/components/layout/Container";
@@ -9,9 +9,20 @@ import FloatingElements from "@/components/ui/FloatingElements";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import CelebrityFilterTabs from "./CelebrityFilterTabs";
 import FomoToast from "./FomoToast";
+import { getCelebrities } from "@/lib/api/celebrities";
 import { MOCK_CELEBRITIES } from "@/lib/constants";
 
-export default function FeaturedCelebritiesSection() {
+export default async function FeaturedCelebritiesSection() {
+  let celebrities = MOCK_CELEBRITIES.slice(0, 8);
+  try {
+    const res = await getCelebrities({ sort: "popularity", pageSize: 8 });
+    if (res.data.length > 0) {
+      celebrities = res.data;
+    }
+  } catch {
+    // Fallback to mock data if API is unavailable
+  }
+
   return (
     <section id="zvezde" className="relative bg-gradient-to-b from-slate-50 to-slate-100">
       <div className="relative py-16 sm:py-20 lg:py-24">
@@ -35,12 +46,12 @@ export default function FeaturedCelebritiesSection() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <CelebrityFilterTabs celebrities={MOCK_CELEBRITIES.slice(0, 8)} />
+            <CelebrityFilterTabs celebrities={celebrities} />
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
             <div className="mt-12 text-center">
-              <Button variant="outline" size="lg">Pogledaj sve zvezde →</Button>
+              <Button variant="outline" size="lg">Pogledaj sve zvezde &rarr;</Button>
             </div>
           </ScrollReveal>
         </Container>

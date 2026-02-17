@@ -1,13 +1,13 @@
 /**
  * @fileoverview Order page for requesting a personalized video.
- * SSG page with celebrity mini-card hero and order form.
+ * Fetches celebrity from API and displays order form.
  *
  * @route /naruci/[slug]
  */
 
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { MOCK_CELEBRITIES } from "@/lib/constants";
+import { getCelebrity } from "@/lib/api/celebrities";
 import { formatPrice, formatResponseTime } from "@/lib/utils";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -19,14 +19,6 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 import { OrderForm } from "@/components/order";
 
 // ---------------------------------------------------------------------------
-// Static params (SSG)
-// ---------------------------------------------------------------------------
-
-export function generateStaticParams() {
-  return MOCK_CELEBRITIES.map((c) => ({ slug: c.slug }));
-}
-
-// ---------------------------------------------------------------------------
 // Dynamic metadata (SEO)
 // ---------------------------------------------------------------------------
 
@@ -36,21 +28,20 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const celebrity = MOCK_CELEBRITIES.find((c) => c.slug === slug);
-
-  if (!celebrity) {
+  try {
+    const celebrity = await getCelebrity(slug);
+    return {
+      title: `Naruči video od ${celebrity.name} — Viveo`,
+      description: `Naruči personalizovanu video poruku od ${celebrity.name}. Cena: ${formatPrice(celebrity.price)}. ${celebrity.bio}`,
+      openGraph: {
+        title: `Naruči video od ${celebrity.name} — Viveo`,
+        description: `Personalizovana video poruka od ${celebrity.name} za ${formatPrice(celebrity.price)}`,
+        type: "website",
+      },
+    };
+  } catch {
     return { title: "Narudžbina nije pronađena — Viveo" };
   }
-
-  return {
-    title: `Naruči video od ${celebrity.name} — Viveo`,
-    description: `Naruči personalizovanu video poruku od ${celebrity.name}. Cena: ${formatPrice(celebrity.price)}. ${celebrity.bio}`,
-    openGraph: {
-      title: `Naruči video od ${celebrity.name} — Viveo`,
-      description: `Personalizovana video poruka od ${celebrity.name} za ${formatPrice(celebrity.price)}`,
-      type: "website",
-    },
-  };
 }
 
 // ---------------------------------------------------------------------------
@@ -59,9 +50,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function OrderPage({ params }: PageProps) {
   const { slug } = await params;
-  const celebrity = MOCK_CELEBRITIES.find((c) => c.slug === slug);
 
-  if (!celebrity) notFound();
+  let celebrity;
+  try {
+    celebrity = await getCelebrity(slug);
+  } catch {
+    notFound();
+  }
 
   return (
     <>

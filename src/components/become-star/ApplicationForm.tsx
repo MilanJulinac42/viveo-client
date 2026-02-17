@@ -9,6 +9,8 @@ import { useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { createApplication } from "@/lib/api/applications";
+import { ApiRequestError } from "@/lib/api";
 import Button from "@/components/ui/Button";
 
 const CATEGORIES = [
@@ -46,6 +48,7 @@ export default function ApplicationForm() {
   // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [apiError, setApiError] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // Validation
@@ -75,7 +78,6 @@ export default function ApplicationForm() {
   }, []);
 
   const handleSubmit = useCallback(async () => {
-    // Mark all fields as touched
     setTouched({
       fullName: true,
       email: true,
@@ -86,16 +88,34 @@ export default function ApplicationForm() {
       bio: true,
       motivation: true,
     });
+    setApiError("");
 
     if (!isValid) return;
 
     setIsSubmitting(true);
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [isValid]);
+    try {
+      await createApplication({
+        fullName,
+        email,
+        phone,
+        category,
+        socialMedia,
+        followers,
+        bio,
+        motivation,
+      });
+      setIsSuccess(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        setApiError(err.message);
+      } else {
+        setApiError("Došlo je do greške. Pokušajte ponovo.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isValid, fullName, email, phone, category, socialMedia, followers, bio, motivation]);
 
   // -----------------------------------------------------------------------
   // Success State
@@ -441,6 +461,11 @@ export default function ApplicationForm() {
 
       {/* Submit area */}
       <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
+        {apiError && (
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {apiError}
+          </div>
+        )}
         <Button
           variant="primary"
           size="lg"

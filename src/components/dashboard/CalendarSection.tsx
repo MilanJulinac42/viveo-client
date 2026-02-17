@@ -1,6 +1,6 @@
 /**
  * @fileoverview Calendar/availability section for the celebrity dashboard.
- * Allows setting daily availability and max request limits.
+ * Allows setting daily availability and max request limits with API save.
  */
 
 "use client";
@@ -9,6 +9,7 @@ import { useState, useMemo, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { SERBIAN_DAYS } from "@/lib/constants";
+import { updateDashboardAvailability } from "@/lib/api/dashboard";
 import { Card, CardBody } from "@/components/ui/Card";
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import Button from "@/components/ui/Button";
@@ -26,6 +27,8 @@ interface CalendarSectionProps {
 export default function CalendarSection({ availability: initialAvailability }: CalendarSectionProps) {
   const [slots, setSlots] = useState(initialAvailability);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const availableDays = useMemo(() => slots.filter((s) => s.available).length, [slots]);
   const totalCapacity = useMemo(
@@ -51,10 +54,26 @@ export default function CalendarSection({ availability: initialAvailability }: C
     );
   }, []);
 
-  const handleSave = useCallback(() => {
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-  }, []);
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      await updateDashboardAvailability(
+        slots.map((s) => ({
+          dayOfWeek: s.dayOfWeek,
+          available: s.available,
+          maxRequests: s.maxRequests,
+        }))
+      );
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch {
+      setError("Gre\u0161ka pri \u010duvanju rasporeda. Poku\u0161ajte ponovo.");
+      setTimeout(() => setError(null), 4000);
+    } finally {
+      setSaving(false);
+    }
+  }, [slots]);
 
   const handleReset = useCallback(() => {
     setSlots(initialAvailability);
@@ -79,7 +98,21 @@ export default function CalendarSection({ availability: initialAvailability }: C
             exit={{ opacity: 0, y: -10 }}
             className="rounded-xl bg-accent-50 border border-accent-200 px-4 py-3 text-sm font-medium text-accent-700"
           >
-            ✓ Raspored je uspešno sačuvan!
+            &#10003; Raspored je uspe&#353;no sa&#269;uvan!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Error toast */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-medium text-red-700"
+          >
+            {error}
           </motion.div>
         )}
       </AnimatePresence>
@@ -183,11 +216,11 @@ export default function CalendarSection({ availability: initialAvailability }: C
 
       {/* Save / Cancel */}
       <div className="flex items-center justify-end gap-3">
-        <Button variant="ghost" onClick={handleReset}>
-          Poništi izmene
+        <Button variant="ghost" onClick={handleReset} disabled={saving}>
+          Poni&#353;ti izmene
         </Button>
-        <Button variant="primary" onClick={handleSave}>
-          Sačuvaj raspored
+        <Button variant="primary" onClick={handleSave} disabled={saving}>
+          {saving ? "&#268;uvanje..." : "Sa\u010duvaj raspored"}
         </Button>
       </div>
     </div>

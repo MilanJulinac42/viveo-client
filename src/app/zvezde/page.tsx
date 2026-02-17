@@ -6,7 +6,6 @@
  */
 
 import type { Metadata } from "next";
-import { MOCK_CELEBRITIES, MOCK_CATEGORIES } from "@/lib/constants";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CatalogClient } from "@/components/catalog";
@@ -28,10 +27,7 @@ export default function ZvezdePage() {
     <>
       <Header />
       <main>
-        <CatalogClient
-          celebrities={MOCK_CELEBRITIES}
-          categories={MOCK_CATEGORIES}
-        />
+        <CatalogClient />
       </main>
       <Footer />
     </>

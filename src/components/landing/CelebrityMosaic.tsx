@@ -1,13 +1,25 @@
 /**
  * @fileoverview Decorative mosaic of celebrity avatars for CTA background.
- * Server component — no interactivity needed.
+ * Fetches celebrities from API; falls back to mock data.
  */
 
+import { getCelebrities } from "@/lib/api/celebrities";
 import { MOCK_CELEBRITIES } from "@/lib/constants";
+import type { Celebrity } from "@/lib/types";
 
-export default function CelebrityMosaic() {
+export default async function CelebrityMosaic() {
+  let celebrities: Celebrity[] = MOCK_CELEBRITIES;
+  try {
+    const res = await getCelebrities({ pageSize: 8 });
+    if (res.data.length > 0) {
+      celebrities = res.data;
+    }
+  } catch {
+    // Fallback to mock data
+  }
+
   // Repeat the list to fill a grid
-  const repeated = [...MOCK_CELEBRITIES, ...MOCK_CELEBRITIES, ...MOCK_CELEBRITIES];
+  const repeated = [...celebrities, ...celebrities, ...celebrities];
 
   return (
     <div className="absolute inset-0 overflow-hidden opacity-[0.06]">

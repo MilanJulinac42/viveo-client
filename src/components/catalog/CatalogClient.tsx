@@ -1,12 +1,11 @@
 /**
  * @fileoverview Main catalog orchestrator component.
- * Manages search, category filtering, sorting, and pagination state.
- * Renders the complete catalog page layout inside the server page shell.
+ * Fetches celebrities and categories from API, manages search, filtering, sorting.
  */
 
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
@@ -14,14 +13,12 @@ import CelebrityCard from "@/components/profile/CelebrityCard";
 import SearchInput from "./SearchInput";
 import SortSelect, { type SortOption } from "./SortSelect";
 import { cn } from "@/lib/utils";
+import { getCelebrities, type CelebritiesParams } from "@/lib/api/celebrities";
+import { getCategories } from "@/lib/api/categories";
 import type { Celebrity, Category } from "@/lib/types";
 
 interface CatalogClientProps {
-  /** All celebrities to display */
-  celebrities: Celebrity[];
-  /** All categories for filter tabs */
-  categories: Category[];
-  /** Pre-selected category (e.g., "Glumci") for category pages */
+  /** Pre-selected category slug (e.g., "glumci") for category pages */
   initialCategory?: string;
   /** Pre-filled search query (e.g., for search page) */
   initialSearch?: string;
@@ -31,12 +28,9 @@ interface CatalogClientProps {
   autoFocusSearch?: boolean;
 }
 
-/** Items per page for load-more pagination */
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 12;
 
 export default function CatalogClient({
-  celebrities,
-  categories,
   initialCategory,
   initialSearch,
   showHeader = true,
@@ -45,84 +39,95 @@ export default function CatalogClient({
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
+  const [celebrities, setCelebrities] = useState<Celebrity[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(initialSearch || "");
-  const [activeCategory, setActiveCategory] = useState(initialCategory || "Svi");
+  const [activeCategory, setActiveCategory] = useState(initialCategory || "");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [page, setPage] = useState(1);
+  const isFirstLoad = useRef(true);
 
-  // Reset pagination when filters change
+  // ---------------------------------------------------------------------------
+  // Fetch categories once
+  // ---------------------------------------------------------------------------
   useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
-  }, [searchQuery, activeCategory]);
+    getCategories().then(setCategories).catch(() => {});
+  }, []);
 
-  // Build tabs array: "Svi" + all categories with emoji
+  // ---------------------------------------------------------------------------
+  // Fetch celebrities when filters change
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    let cancelled = false;
+
+    const params: CelebritiesParams = {
+      page,
+      pageSize: PAGE_SIZE,
+      sort: sortBy,
+    };
+    if (searchQuery.trim()) params.search = searchQuery.trim();
+    if (activeCategory) params.category = activeCategory;
+
+    if (isFirstLoad.current || page === 1) {
+      setLoading(true);
+    }
+
+    getCelebrities(params)
+      .then((res) => {
+        if (cancelled) return;
+        if (page === 1) {
+          setCelebrities(res.data);
+        } else {
+          setCelebrities((prev) => [...prev, ...res.data]);
+        }
+        setTotalCount(res.meta?.total ?? res.data.length);
+        isFirstLoad.current = false;
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCelebrities([]);
+          setTotalCount(0);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [searchQuery, activeCategory, sortBy, page]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, activeCategory, sortBy]);
+
+  // Build tabs array
   const tabs = useMemo(
     () => [
-      { label: "Svi", category: "Svi" },
+      { label: "Svi", slug: "" },
       ...categories.map((c) => ({
         label: `${c.icon} ${c.name}`,
-        category: c.name,
+        slug: c.slug,
       })),
     ],
     [categories]
   );
 
-  // ---------------------------------------------------------------------------
-  // Filtering, searching, sorting (derived data)
-  // ---------------------------------------------------------------------------
-  const filtered = useMemo(() => {
-    let results = celebrities;
-
-    // 1. Category filter
-    if (activeCategory !== "Svi") {
-      results = results.filter((c) => c.category === activeCategory);
-    }
-
-    // 2. Search filter (name, bio, category — case-insensitive)
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      results = results.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.bio.toLowerCase().includes(q) ||
-          c.category.toLowerCase().includes(q)
-      );
-    }
-
-    // 3. Sort
-    switch (sortBy) {
-      case "price-asc":
-        results = [...results].sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        results = [...results].sort((a, b) => b.price - a.price);
-        break;
-      case "rating":
-        results = [...results].sort((a, b) => b.rating - a.rating);
-        break;
-      case "popularity":
-      default:
-        results = [...results].sort((a, b) => b.reviewCount - a.reviewCount);
-        break;
-    }
-
-    return results;
-  }, [celebrities, activeCategory, searchQuery, sortBy]);
-
-  const visibleCelebrities = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
+  const hasMore = celebrities.length < totalCount;
 
   // ---------------------------------------------------------------------------
   // Handlers
   // ---------------------------------------------------------------------------
   const handleClearFilters = useCallback(() => {
     setSearchQuery("");
-    setActiveCategory("Svi");
+    setActiveCategory("");
     setSortBy("popularity");
   }, []);
 
   const handleLoadMore = useCallback(() => {
-    setVisibleCount((prev) => prev + PAGE_SIZE);
+    setPage((prev) => prev + 1);
   }, []);
 
   // ---------------------------------------------------------------------------
@@ -130,9 +135,6 @@ export default function CatalogClient({
   // ---------------------------------------------------------------------------
   return (
     <>
-      {/* ----------------------------------------------------------------- */}
-      {/* Page Header (hidden on category pages that have their own hero)   */}
-      {/* ----------------------------------------------------------------- */}
       {showHeader && (
         <section className="bg-gradient-to-b from-primary-50 to-white pb-8 pt-12 sm:pb-12 sm:pt-16">
           <Container>
@@ -153,12 +155,9 @@ export default function CatalogClient({
         </section>
       )}
 
-      {/* ----------------------------------------------------------------- */}
-      {/* Search + Sort + Category Tabs                                     */}
-      {/* ----------------------------------------------------------------- */}
+      {/* Search + Sort + Category Tabs */}
       <section className="border-b border-slate-100 pb-6">
         <Container>
-          {/* Search + Sort row */}
           <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
             <SearchInput
               value={searchQuery}
@@ -173,17 +172,16 @@ export default function CatalogClient({
             />
           </div>
 
-          {/* Category tabs */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
             {tabs.map((tab) => (
               <button
-                key={tab.category}
+                key={tab.slug}
                 type="button"
-                onClick={() => setActiveCategory(tab.category)}
-                aria-pressed={activeCategory === tab.category}
+                onClick={() => setActiveCategory(tab.slug)}
+                aria-pressed={activeCategory === tab.slug}
                 className={cn(
                   "rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200",
-                  activeCategory === tab.category
+                  activeCategory === tab.slug
                     ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
                     : "border border-slate-200 bg-white/80 text-slate-600 hover:bg-primary-50 hover:text-primary-700"
                 )}
@@ -195,23 +193,25 @@ export default function CatalogClient({
         </Container>
       </section>
 
-      {/* ----------------------------------------------------------------- */}
-      {/* Results                                                           */}
-      {/* ----------------------------------------------------------------- */}
+      {/* Results */}
       <section className="py-8 sm:py-12">
         <Container>
-          {/* Results count */}
-          {filtered.length > 0 && (
-            <p className="mb-6 text-sm text-slate-500">
-              Prikazano {visibleCelebrities.length} od {filtered.length} zvezda
-            </p>
-          )}
-
-          {/* Grid */}
-          {filtered.length > 0 ? (
+          {loading && celebrities.length === 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-72 animate-pulse rounded-2xl bg-slate-100"
+                />
+              ))}
+            </div>
+          ) : celebrities.length > 0 ? (
             <>
+              <p className="mb-6 text-sm text-slate-500">
+                Prikazano {celebrities.length} od {totalCount} zvezda
+              </p>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {visibleCelebrities.map((celebrity, i) => (
+                {celebrities.map((celebrity, i) => (
                   <ScrollReveal
                     key={celebrity.id}
                     delay={Math.min(i * 0.05, 0.4)}
@@ -221,17 +221,20 @@ export default function CatalogClient({
                 ))}
               </div>
 
-              {/* Load more */}
               {hasMore && (
                 <div className="mt-12 text-center">
-                  <Button variant="outline" size="lg" onClick={handleLoadMore}>
-                    Prikaži još
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                  >
+                    {loading ? "Učitavanje..." : "Prikaži još"}
                   </Button>
                 </div>
               )}
             </>
           ) : (
-            /* Empty state */
             <div className="py-20 text-center">
               <span className="text-6xl">🔍</span>
               <h3 className="mt-6 text-xl font-bold text-slate-700">
