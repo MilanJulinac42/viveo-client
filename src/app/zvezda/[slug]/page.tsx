@@ -11,13 +11,15 @@ import Footer from "@/components/layout/Footer";
 import {
   ProfileHero,
   ProfileAbout,
-  ProfileVideoShowcase,
+  ProfileTabs,
   ProfileReviews,
   SimilarCelebrities,
   StickyBottomCTA,
 } from "@/components/profile";
 import type { Metadata } from "next";
 import { getCelebrity, getCelebrityReviews, getCelebrities } from "@/lib/api/celebrities";
+import { getCelebrityProducts } from "@/lib/api/products";
+import { getCelebrityDigitalProducts } from "@/lib/api/digital-products";
 import { celebrityJsonLd } from "@/lib/jsonLd";
 
 // ---------------------------------------------------------------------------
@@ -33,13 +35,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   try {
     const celebrity = await getCelebrity(slug);
     return {
-      title: `${celebrity.name} — Naruči video poruku | Viveo`,
+      title: `${celebrity.name} — Video poruke, Merch i Digitalni proizvodi | Viveo`,
       description:
         celebrity.extendedBio ||
-        `Naruči personalizovanu video poruku od ${celebrity.name}. ${celebrity.bio}`,
+        `Naruči personalizovanu video poruku, merch i digitalne proizvode od ${celebrity.name}. ${celebrity.bio}`,
       openGraph: {
         title: `${celebrity.name} — Viveo`,
-        description: `Personalizovana video poruka od ${celebrity.name} — ${celebrity.category}`,
+        description: `Sve usluge od ${celebrity.name} — video poruke, merch, digitalni proizvodi — ${celebrity.category}`,
         type: "profile",
       },
     };
@@ -62,10 +64,12 @@ export default async function CelebrityProfilePage({ params }: PageProps) {
     notFound();
   }
 
-  // Fetch reviews and similar celebrities in parallel
-  const [reviews, similarRes] = await Promise.all([
+  // Fetch reviews, similar celebrities, merch products, and digital products in parallel
+  const [reviews, similarRes, products, digitalProducts] = await Promise.all([
     getCelebrityReviews(slug).catch(() => []),
     getCelebrities({ category: celebrity.category, pageSize: 5 }).catch(() => ({ data: [] as never[], meta: undefined })),
+    getCelebrityProducts(slug).catch(() => []),
+    getCelebrityDigitalProducts(slug).catch(() => []),
   ]);
 
   // Exclude current celebrity, take up to 4
@@ -96,7 +100,7 @@ export default async function CelebrityProfilePage({ params }: PageProps) {
       <main>
         <ProfileHero celebrity={celebrity} />
         <ProfileAbout celebrity={celebrity} />
-        <ProfileVideoShowcase celebrity={celebrity} />
+        <ProfileTabs celebrity={celebrity} products={products} digitalProducts={digitalProducts} />
         <ProfileReviews reviews={reviews} celebrityName={celebrity.name} />
         <SimilarCelebrities celebrities={similar} />
       </main>

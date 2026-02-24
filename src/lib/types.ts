@@ -133,6 +133,24 @@ export interface VideoShowcaseItem {
   message: string;
 }
 
+/** Product showcase item for landing page feature cards */
+export interface ProductShowcaseItem {
+  /** Unique identifier */
+  id: string;
+  /** Display title (e.g., "Video poruke") */
+  title: string;
+  /** Short description */
+  description: string;
+  /** Emoji icon */
+  icon: string;
+  /** Link target */
+  href: string;
+  /** Tailwind gradient start class */
+  accentFrom: string;
+  /** Tailwind gradient end class */
+  accentTo: string;
+}
+
 /** Press/media logo item */
 export interface PressLogo {
   /** Unique identifier */
@@ -181,7 +199,7 @@ export interface HeroStat {
 export type RequestStatus = "pending" | "approved" | "completed" | "rejected";
 
 /** Dashboard tab identifiers */
-export type DashboardTab = "requests" | "earnings" | "profile" | "calendar";
+export type DashboardTab = "requests" | "earnings" | "profile" | "calendar" | "products" | "merch-orders" | "digital-products" | "digital-orders";
 
 /** A video request from a fan to a celebrity */
 export interface VideoRequest {
@@ -287,4 +305,292 @@ export interface ProfileSettings {
   tags: string[];
   /** Whether currently accepting requests */
   acceptingRequests: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Merch Types
+// ---------------------------------------------------------------------------
+
+/** Product category for merch */
+export interface ProductCategory {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+}
+
+/** Product image */
+export interface ProductImage {
+  id: string;
+  imagePath: string;
+  imageUrl: string;
+  sortOrder: number;
+}
+
+/** Product variant (size, color, etc.) */
+export interface ProductVariant {
+  id: string;
+  name: string;
+  sku: string | null;
+  priceOverride: number | null;
+  stock: number;
+  sortOrder: number;
+}
+
+/** Product listing item (catalog view) */
+export interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  isActive: boolean;
+  featured: boolean;
+  celebrityId: string;
+  celebrityName: string;
+  celebritySlug: string;
+  categoryName: string | null;
+  imageUrl: string | null;
+  variantCount: number;
+  createdAt: string;
+}
+
+/** Product detail (full page view) */
+export interface ProductDetail extends Product {
+  productCategoryId: string | null;
+  variants: ProductVariant[];
+  images: ProductImage[];
+}
+
+/** Merch order status */
+export type MerchOrderStatus =
+  | "pending"
+  | "confirmed"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
+
+/** Fan's merch order */
+export interface FanMerchOrder {
+  id: string;
+  productName: string;
+  productSlug: string;
+  productImageUrl: string | null;
+  celebrityName: string;
+  celebritySlug: string;
+  variantName: string | null;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  status: MerchOrderStatus;
+  trackingNumber: string | null;
+  shippingName: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingPostal: string;
+  createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Star Dashboard Merch Types
+// ---------------------------------------------------------------------------
+
+/** Star's product (for dashboard management) */
+export interface StarProduct {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  isActive: boolean;
+  featured: boolean;
+  categoryName: string | null;
+  productCategoryId: string | null;
+  imageUrl: string | null;
+  variantCount: number;
+  totalOrders: number;
+  totalRevenue: number;
+  variants: ProductVariant[];
+  images: ProductImage[];
+  createdAt: string;
+}
+
+/** Star's merch order */
+export interface StarMerchOrder {
+  id: string;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
+  productName: string;
+  variantName: string | null;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  status: MerchOrderStatus;
+  shippingName: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingPostal: string;
+  shippingNote: string;
+  trackingNumber: string | null;
+  createdAt: string;
+}
+
+/** Merch earnings summary */
+export interface MerchEarningsSummary {
+  totalEarnings: number;
+  totalOrders: number;
+  pendingOrders: number;
+}
+
+// ---------------------------------------------------------------------------
+// Digital Products Types
+// ---------------------------------------------------------------------------
+
+/** Digital product category */
+export interface DigitalProductCategory {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+}
+
+/** Digital product listing item (catalog view) */
+export interface DigitalProduct {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  featured: boolean;
+  fileType: string;
+  fileSize: number;
+  downloadCount: number;
+  previewImageUrl: string | null;
+  celebrityName: string;
+  celebritySlug: string;
+  celebrityImage: string;
+  categoryName: string | null;
+  categorySlug: string | null;
+  createdAt: string;
+}
+
+/** Digital product detail */
+export interface DigitalProductDetail extends DigitalProduct {
+  celebrityId: string;
+  categoryId: string | null;
+}
+
+/** Digital order status */
+export type DigitalOrderStatus = "pending" | "confirmed" | "completed" | "cancelled";
+
+/** Fan's digital order */
+export interface FanDigitalOrder {
+  id: string;
+  productName: string;
+  productSlug: string;
+  previewImageUrl: string | null;
+  celebrityName: string;
+  celebritySlug: string;
+  fileType: string;
+  fileSize: number;
+  price: number;
+  status: DigitalOrderStatus;
+  downloadToken: string | null;
+  downloadTokenExpiresAt: string | null;
+  downloadCount: number;
+  createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Star Dashboard Digital Types
+// ---------------------------------------------------------------------------
+
+/** Star's digital product (for dashboard management) */
+export interface StarDigitalProduct {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  isActive: boolean;
+  featured: boolean;
+  fileType: string;
+  fileSize: number;
+  fileName: string;
+  previewImageUrl: string | null;
+  categoryName: string | null;
+  digitalProductCategoryId: string | null;
+  downloadCount: number;
+  createdAt: string;
+}
+
+/** Star's digital order */
+export interface StarDigitalOrder {
+  id: string;
+  buyerName: string;
+  buyerEmail: string;
+  buyerAvatar: string;
+  productName: string;
+  productSlug: string;
+  fileType: string;
+  price: number;
+  status: DigitalOrderStatus;
+  downloadToken: string | null;
+  downloadTokenExpiresAt: string | null;
+  downloadCount: number;
+  createdAt: string;
+}
+
+/** Digital earnings summary */
+export interface DigitalEarningsSummary {
+  totalDigitalEarnings: number;
+  completedOrders: number;
+  pendingOrders: number;
+}
+
+// ---------------------------------------------------------------------------
+// Global Search Types
+// ---------------------------------------------------------------------------
+
+/** Search result item for a celebrity */
+export interface SearchCelebrityResult {
+  id: string;
+  name: string;
+  slug: string;
+  image: string;
+  category: string;
+  rating: number;
+  verified: boolean;
+  price: number;
+}
+
+/** Search result item for a merch product */
+export interface SearchProductResult {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  celebrityName: string;
+  celebritySlug: string;
+  imageUrl: string | null;
+}
+
+/** Search result item for a digital product */
+export interface SearchDigitalResult {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  fileType: string;
+  previewImageUrl: string | null;
+  celebrityName: string;
+  celebritySlug: string;
+}
+
+/** Global search response */
+export interface GlobalSearchResult {
+  celebrities: SearchCelebrityResult[];
+  products: SearchProductResult[];
+  digitalProducts: SearchDigitalResult[];
 }

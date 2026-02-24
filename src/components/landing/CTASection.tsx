@@ -14,10 +14,7 @@ import SplitCTA from "./SplitCTA";
 export default function CTASection() {
   return (
     <section className="relative">
-      {/* Curved top */}
-      <CurvedDivider position="top" fillColor="fill-primary-700" />
-
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 py-16 sm:py-20">
+      <div className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 py-16 sm:py-20">
         <SpotlightCursor />
         <FloatingElements variant="sparkles" />
         <CelebrityMosaic />
@@ -26,21 +23,21 @@ export default function CTASection() {
         <div className="absolute left-1/4 top-0 h-72 w-72 rounded-full bg-secondary-500/10 blur-3xl animate-pulse" style={{ animationDuration: "6s" }} />
         <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-primary-400/15 blur-3xl animate-pulse" style={{ animationDuration: "8s" }} />
 
-        <Container>
+        <Container className="relative z-[2]">
           <ScrollReveal>
             <div className="relative mx-auto max-w-3xl text-center text-white">
               <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
                 Spreman da iznenadiš nekoga?
               </h2>
               <p className="mx-auto mt-5 max-w-lg text-lg leading-relaxed text-primary-200">
-                Naruči personalizovanu video poruku danas i napravi nečiji dan
-                nezaboravnim. Brzo, jednostavno i potpuno jedinstveno.
+                Pronađi savršen poklon — video poruku, originalni merch ili
+                ekskluzivni digitalni sadržaj od omiljenih zvezda.
               </p>
             </div>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <div className="relative mx-auto mt-12 max-w-3xl">
+            <div className="relative mx-auto mt-12 max-w-5xl">
               <SplitCTA />
             </div>
           </ScrollReveal>

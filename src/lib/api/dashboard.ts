@@ -44,6 +44,21 @@ export async function uploadVideo(
   return res.data;
 }
 
+/** Upload avatar image for the star profile */
+export async function uploadAvatar(
+  file: File,
+  onProgress?: (percent: number) => void
+) {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const res = await postFormData<{ imageUrl: string }>(
+    "/dashboard/profile/avatar",
+    formData,
+    onProgress
+  );
+  return res.data;
+}
+
 /** Fetch earnings summary */
 export async function getDashboardEarnings() {
   const res = await get<EarningsSummary>("/dashboard/earnings");

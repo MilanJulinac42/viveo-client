@@ -9,13 +9,28 @@ import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
 import Container from "./Container";
 import Button from "@/components/ui/Button";
+import SearchOverlay from "./SearchOverlay";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { user, loading, logout } = useAuth();
+
+  // Cmd+K / Ctrl+K shortcut to toggle search
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      setSearchOpen((prev) => !prev);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/20 bg-white/60 backdrop-blur-xl shadow-sm shadow-slate-900/5">
@@ -42,6 +57,23 @@ export default function Header() {
           </nav>
 
           {/* Desktop CTA / Auth */}
+          <div className="hidden items-center gap-3 md:flex">
+            {/* Search button */}
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-3 py-1.5 text-sm text-slate-400 transition-colors hover:border-primary-200 hover:text-primary-500"
+              aria-label="Pretraži"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <span className="hidden lg:inline">Pretraži</span>
+              <kbd className="hidden lg:inline-flex items-center rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium text-slate-400">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
           <div className="hidden items-center gap-3 md:flex">
             {loading ? (
               <div className="h-9 w-24 animate-pulse rounded-xl bg-slate-100" />
@@ -80,10 +112,21 @@ export default function Header() {
             )}
           </div>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Search + Hamburger */}
+          <div className="flex items-center gap-1 md:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-lg p-2.5 text-slate-600 hover:bg-slate-100"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Pretraži"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+            </button>
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-lg p-2.5 text-slate-600 hover:bg-slate-100 md:hidden"
+            className="inline-flex items-center justify-center rounded-lg p-2.5 text-slate-600 hover:bg-slate-100"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Zatvori meni" : "Otvori meni"}
             aria-expanded={mobileMenuOpen}
@@ -98,6 +141,7 @@ export default function Header() {
               </svg>
             )}
           </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -154,6 +198,7 @@ export default function Header() {
           </nav>
         </div>
       </Container>
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

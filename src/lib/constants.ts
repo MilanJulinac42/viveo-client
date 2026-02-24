@@ -14,6 +14,7 @@ import type {
   FomoNotification,
   FAQItem,
   VideoShowcaseItem,
+  ProductShowcaseItem,
   PressLogo,
   VideoRequest,
   EarningsSummary,
@@ -27,6 +28,9 @@ import type {
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Zvezde", href: "/zvezde" },
+  { label: "Prodavnica", href: "/prodavnica" },
+  { label: "Digitalni proizvodi", href: "/digitalni-proizvodi" },
+  { label: "Omiljeni", href: "/omiljeni" },
   { label: "Postani zvezda", href: "/postani-zvezda" },
   { label: "O nama", href: "/o-nama" },
   { label: "Kontakt", href: "/kontakt" },
@@ -38,7 +42,7 @@ export const NAV_LINKS: NavLink[] = [
 
 export const HERO_STATS: HeroStat[] = [
   { value: "500+", label: "Zvezda", numericValue: 500, suffix: "+" },
-  { value: "10.000+", label: "Video poruka", numericValue: 10000, suffix: "+" },
+  { value: "50.000+", label: "Zadovoljnih fanova", numericValue: 50000, suffix: "+" },
   { value: "4.9", label: "Prosečna ocena", numericValue: 4.9, decimals: 1 },
 ];
 
@@ -50,23 +54,23 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
   {
     step: 1,
     icon: "🔍",
-    title: "Pronađi zvezdu",
+    title: "Izaberi zvezdu",
     description:
-      "Pretraži naš katalog poznatih ličnosti iz Srbije. Glumci, muzičari, sportisti — izaberi svog favorita.",
+      "Pretraži naš katalog poznatih ličnosti iz Srbije. Glumci, muzičari, sportisti, influenseri — pronađi svog favorita.",
   },
   {
     step: 2,
-    icon: "✍️",
-    title: "Opiši svoju želju",
+    icon: "🛒",
+    title: "Izaberi šta želiš",
     description:
-      "Napiši za koga je poruka i šta želiš da zvezda kaže. Rođendan, motivacija, čestitka — sve je moguće.",
+      "Personalizovana video poruka, originalni merch iz prodavnice ili ekskluzivni digitalni sadržaj — izbor je tvoj.",
   },
   {
     step: 3,
-    icon: "🎬",
-    title: "Primi video",
+    icon: "🎁",
+    title: "Uživaj u sadržaju",
     description:
-      "Zvezda snima personalizovanu video poruku samo za tebe. Primi je u roku od 7 dana i iznenadi voljenu osobu.",
+      "Primi jedinstven poklon brzo i jednostavno. Video poruke do 7 dana, merch na kućnu adresu, digitalni sadržaj odmah.",
   },
 ];
 
@@ -322,8 +326,8 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     author: "Nemanja Ristić",
     avatar: "",
     rating: 4,
-    text: "Video poruka za kolegu koji odlazi u penziju. Svi u kancelariji su se smejali do suza. Fantastičan poklon za svaku priliku!",
-    celebrityName: "Nikola Stanković",
+    text: "Kupio sam majicu od omiljenog repera preko Viveo prodavnice. Kvalitet je odličan, a dostava je stigla za 3 dana. Već sam naručio i šolju!",
+    celebrityName: "Đorđe Milošević",
     date: "2025-01-28",
   },
   {
@@ -331,7 +335,7 @@ export const MOCK_TESTIMONIALS: Testimonial[] = [
     author: "Tamara Đukić",
     avatar: "",
     rating: 5,
-    text: "Moja ćerka je dobila poruku od omiljene influenserke za rođendan. Nije mogla da veruje! Definitivno ću ponovo koristiti Viveo.",
+    text: "Preuzela sam foto presete od omiljenog fotografa — slike su mi sada na potpuno drugom nivou! Instant preuzimanje, baš praktično.",
     celebrityName: "Ana Đorđević",
     date: "2025-02-10",
   },
@@ -362,12 +366,12 @@ export const FOMO_NOTIFICATIONS: FomoNotification[] = [
 // ---------------------------------------------------------------------------
 
 export const SOCIAL_PROOF_STATS: string[] = [
-  "234 video poruke danas",
+  "10.000+ isporučenih video poruka",
   "98% zadovoljnih korisnika",
   "500+ zvezda na platformi",
-  "Prosečno vreme odgovora: 24h",
+  "Originalni merch od kreatora",
   "4.9 prosečna ocena",
-  "10.000+ isporučenih poruka",
+  "Instant digitalna isporuka",
 ];
 
 // ---------------------------------------------------------------------------
@@ -377,9 +381,9 @@ export const SOCIAL_PROOF_STATS: string[] = [
 export const FAQ_ITEMS: FAQItem[] = [
   {
     id: "faq-1",
-    question: "Kako funkcioniše naručivanje video poruke?",
+    question: "Šta je Viveo i šta sve nudi?",
     answer:
-      "Izaberite zvezdu, opišite za koga je poruka i šta želite da kaže, i platite online. Zvezda snima personalizovanu video poruku i šalje vam je u roku od 7 dana.",
+      "Viveo je platforma koja povezuje fanove sa omiljenim zvezdama. Možete naručiti personalizovane video poruke, kupiti originalni merch (majice, šolje, posteri) ili preuzeti ekskluzivni digitalni sadržaj (presete, šablone, edukativne materijale).",
   },
   {
     id: "faq-2",
@@ -410,6 +414,24 @@ export const FAQ_ITEMS: FAQItem[] = [
     question: "Koji načini plaćanja su dostupni?",
     answer:
       "Prihvatamo sve glavne platne kartice (Visa, Mastercard), kao i plaćanje putem mobilnih aplikacija. Sva plaćanja su sigurna i enkriptovana.",
+  },
+  {
+    id: "faq-7",
+    question: "Kako funkcioniše prodavnica merch proizvoda?",
+    answer:
+      "Zvezde kreiraju originalne proizvode (majice, šolje, posteri i drugo) koje možete kupiti direktno na platformi. Nakon narudžbine, proizvod se šalje na vašu kućnu adresu.",
+  },
+  {
+    id: "faq-8",
+    question: "Šta su digitalni proizvodi?",
+    answer:
+      "Digitalni proizvodi su ekskluzivan sadržaj koji zvezde kreiraju za svoje fanove — foto preseti, video šabloni, edukativni materijali, muzika i još mnogo toga. Preuzimate ih odmah nakon kupovine.",
+  },
+  {
+    id: "faq-9",
+    question: "Kako preuzimam digitalne proizvode?",
+    answer:
+      "Nakon potvrde narudžbine, dobijate link za preuzimanje putem emaila. Link je aktivan 7 dana i možete preuzeti sadržaj neograničen broj puta u tom periodu.",
   },
 ];
 
@@ -454,6 +476,43 @@ export const VIDEO_SHOWCASE_ITEMS: VideoShowcaseItem[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Product Showcase Items (Landing page — "Šta sve možeš na Viveo?")
+// ---------------------------------------------------------------------------
+
+export const PRODUCT_SHOWCASE_ITEMS: ProductShowcaseItem[] = [
+  {
+    id: "showcase-video",
+    title: "Video poruke",
+    description:
+      "Naruči personalizovanu video poruku od omiljene zvezde. Savršen poklon za rođendan, godišnjicu ili bilo koju priliku.",
+    icon: "🎬",
+    href: "/zvezde",
+    accentFrom: "from-primary-500",
+    accentTo: "to-primary-700",
+  },
+  {
+    id: "showcase-merch",
+    title: "Prodavnica",
+    description:
+      "Kupi originalni merch omiljenih zvezda — majice, šolje, posteri i još mnogo toga. Direktno od kreatora do tebe.",
+    icon: "🛍️",
+    href: "/prodavnica",
+    accentFrom: "from-secondary-500",
+    accentTo: "to-amber-600",
+  },
+  {
+    id: "showcase-digital",
+    title: "Digitalni sadržaj",
+    description:
+      "Preuzmi ekskluzivne digitalne proizvode — presete, šablone, edukativne materijale i još mnogo toga. Instant isporuka.",
+    icon: "📥",
+    href: "/digitalni-proizvodi",
+    accentFrom: "from-accent-500",
+    accentTo: "to-emerald-600",
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Press Logos (Faza 7c)
 // ---------------------------------------------------------------------------
 
@@ -487,6 +546,23 @@ export const STATUS_LABELS: Record<string, string> = {
   approved: "Prihvaćen",
   completed: "Završen",
   rejected: "Odbijen",
+};
+
+/** Merch order status labels in Serbian */
+export const MERCH_STATUS_LABELS: Record<string, string> = {
+  pending: "Na čekanju",
+  confirmed: "Potvrđeno",
+  shipped: "Poslato",
+  delivered: "Isporučeno",
+  cancelled: "Otkazano",
+};
+
+/** Digital order status labels in Serbian */
+export const DIGITAL_STATUS_LABELS: Record<string, string> = {
+  pending: "Na čekanju",
+  confirmed: "Potvrđeno",
+  completed: "Završeno",
+  cancelled: "Otkazano",
 };
 
 export const MOCK_REQUESTS: VideoRequest[] = [

@@ -1,14 +1,15 @@
 /**
  * @fileoverview Profile settings section for the celebrity dashboard.
  * Allows editing name, bio, tags, price, response time with API save.
+ * Includes avatar upload with preview and progress bar.
  */
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { updateDashboardProfile } from "@/lib/api/dashboard";
+import { updateDashboardProfile, uploadAvatar } from "@/lib/api/dashboard";
 import { Card, CardBody } from "@/components/ui/Card";
 import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
@@ -41,6 +42,59 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
   const [showSuccess, setShowSuccess] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Avatar upload state
+  const [avatarUrl, setAvatarUrl] = useState(celebrity.image || "");
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarProgress, setAvatarProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      setError("Dozvoljeni formati: JPEG, PNG, WebP");
+      setTimeout(() => setError(null), 4000);
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Maksimalna veličina slike je 5 MB");
+      setTimeout(() => setError(null), 4000);
+      return;
+    }
+
+    // Show preview immediately
+    const previewUrl = URL.createObjectURL(file);
+    setAvatarPreview(previewUrl);
+    setAvatarUploading(true);
+    setAvatarProgress(0);
+    setError(null);
+
+    try {
+      const result = await uploadAvatar(file, (percent) => {
+        setAvatarProgress(percent);
+      });
+      setAvatarUrl(result.imageUrl);
+      setAvatarPreview(null);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch {
+      setError("Greška pri uploadu slike. Pokušajte ponovo.");
+      setAvatarPreview(null);
+      setTimeout(() => setError(null), 4000);
+    } finally {
+      setAvatarUploading(false);
+      setAvatarProgress(0);
+      // Reset file input so same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }, []);
 
   const handleAddTag = useCallback(() => {
     const trimmed = tagInput.trim();
@@ -125,21 +179,63 @@ export default function ProfileSettingsSection({ celebrity }: ProfileSettingsSec
         )}
       </AnimatePresence>
 
-      {/* Profile Preview */}
+      {/* Profile Preview + Avatar Upload */}
       <ScrollReveal>
         <Card glass>
           <CardBody className="flex items-center gap-5 py-6">
-            <Avatar
-              src={celebrity.image}
-              alt={celebrity.name}
-              size="2xl"
-              verified={celebrity.verified}
-            />
+            {/* Clickable avatar area */}
+            <div className="relative group shrink-0">
+              <Avatar
+                src={avatarPreview || avatarUrl}
+                alt={celebrity.name}
+                size="2xl"
+                verified={celebrity.verified}
+              />
+              {/* Hover overlay */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={avatarUploading}
+                className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 group-hover:bg-black/40 transition-colors duration-200 cursor-pointer"
+              >
+                <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center leading-tight px-1">
+                  {avatarUploading ? "Upload..." : "Promeni\nsliku"}
+                </span>
+              </button>
+              {/* Progress ring */}
+              {avatarUploading && (
+                <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
+                  <circle
+                    cx="50" cy="50" r="46"
+                    fill="none"
+                    stroke="rgba(108,60,225,0.3)"
+                    strokeWidth="4"
+                  />
+                  <circle
+                    cx="50" cy="50" r="46"
+                    fill="none"
+                    stroke="#6C3CE1"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray={`${2 * Math.PI * 46}`}
+                    strokeDashoffset={`${2 * Math.PI * 46 * (1 - avatarProgress / 100)}`}
+                    className="transition-all duration-300"
+                  />
+                </svg>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+            </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900">{name}</h3>
               <Badge variant="primary" size="sm">{celebrity.category}</Badge>
               <p className="mt-2 text-sm text-slate-500">
-                Promena slike profila &mdash; uskoro
+                Kliknite na sliku da promenite avatar
               </p>
             </div>
           </CardBody>

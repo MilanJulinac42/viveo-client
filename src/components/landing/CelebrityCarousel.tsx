@@ -9,6 +9,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Card, CardBody, CardFooter } from "@/components/ui/Card";
@@ -35,31 +36,33 @@ function TiltCelebrityCard({ celebrity }: { celebrity: Celebrity }) {
       className="h-full rounded-2xl transition-transform duration-300 ease-out"
       {...tilt.handlers}
     >
-      <Card glass className="h-full transition-all duration-300 hover:shadow-xl hover:border-primary-100">
-        <div className="h-1 bg-gradient-to-r from-primary-400 via-primary-500 to-secondary-400" />
-        <CardBody className="flex flex-col items-center pt-5 text-center">
-          <Avatar src={celebrity.image} alt={celebrity.name} size="xl" verified={celebrity.verified} />
-          <h3 className="mt-4 text-lg font-bold text-slate-900">{celebrity.name}</h3>
-          <Badge variant="primary" size="sm" className="mt-2">{celebrity.category}</Badge>
-          <div className="mt-3 flex items-center gap-2">
-            <StarRating rating={celebrity.rating} size="sm" />
-            <span className="text-xs text-slate-500">({celebrity.reviewCount})</span>
-          </div>
-          <p className="mt-2 flex items-center gap-1 text-xs text-slate-400">
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Odgovara za ~{celebrity.responseTime}h
-          </p>
-        </CardBody>
-        <CardFooter className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-slate-400">od</p>
-            <p className="text-lg font-bold text-primary-600">{formatPrice(celebrity.price)}</p>
-          </div>
-          <Button size="sm" variant="outline">Naruči</Button>
-        </CardFooter>
-      </Card>
+      <Link href={`/zvezda/${celebrity.slug}`} className="block h-full">
+        <Card glass className="h-full transition-all duration-300 hover:shadow-xl hover:border-primary-100">
+          <div className="h-1 bg-gradient-to-r from-primary-400 via-primary-500 to-secondary-400" />
+          <CardBody className="flex flex-col items-center pt-5 text-center">
+            <Avatar src={celebrity.image} alt={celebrity.name} size="xl" verified={celebrity.verified} />
+            <h3 className="mt-4 text-lg font-bold text-slate-900">{celebrity.name}</h3>
+            <Badge variant="primary" size="sm" className="mt-2">{celebrity.category}</Badge>
+            <div className="mt-3 flex items-center gap-2">
+              <StarRating rating={celebrity.rating} size="sm" />
+              <span className="text-xs text-slate-500">({celebrity.reviewCount})</span>
+            </div>
+            <p className="mt-2 flex items-center gap-1 text-xs text-slate-400">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Odgovara za ~{celebrity.responseTime}h
+            </p>
+          </CardBody>
+          <CardFooter className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-slate-400">od</p>
+              <p className="text-lg font-bold text-primary-600">{formatPrice(celebrity.price)}</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={(e) => { e.preventDefault(); window.location.href = `/naruci/${celebrity.slug}`; }}>Naruči</Button>
+          </CardFooter>
+        </Card>
+      </Link>
     </div>
   );
 }

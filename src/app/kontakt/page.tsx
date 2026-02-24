@@ -1,6 +1,6 @@
 /**
  * @fileoverview Contact page with contact form and info.
- * Static page — form is presentational only (no backend yet).
+ * Form submits to backend /api/contact endpoint which sends email via Resend.
  *
  * @route /kontakt
  */
@@ -10,6 +10,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/layout/Container";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import ContactForm from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
   title: "Kontakt — Viveo",
@@ -113,91 +114,7 @@ export default function ContactPage() {
               {/* Right: Contact form */}
               <div className="lg:col-span-3">
                 <ScrollReveal delay={0.1}>
-                  <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
-                    <h2 className="text-2xl font-bold text-slate-900">
-                      Pošaljite poruku
-                    </h2>
-                    <div className="mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500" />
-
-                    <form className="mt-8 space-y-5">
-                      {/* Name */}
-                      <div>
-                        <label
-                          htmlFor="name"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
-                        >
-                          Ime i prezime
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          placeholder="Vaše ime"
-                          className="w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-700 backdrop-blur-xl transition-all duration-200 placeholder:text-slate-400 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                        />
-                      </div>
-
-                      {/* Email */}
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
-                        >
-                          Email adresa
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          placeholder="vas@email.com"
-                          className="w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-700 backdrop-blur-xl transition-all duration-200 placeholder:text-slate-400 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                        />
-                      </div>
-
-                      {/* Subject */}
-                      <div>
-                        <label
-                          htmlFor="subject"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
-                        >
-                          Tema
-                        </label>
-                        <select
-                          id="subject"
-                          className="w-full appearance-none rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-700 backdrop-blur-xl transition-all duration-200 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                        >
-                          <option value="">Izaberite temu</option>
-                          <option value="general">Opšte pitanje</option>
-                          <option value="order">Pitanje o narudžbini</option>
-                          <option value="talent">Želim da postanem zvezda</option>
-                          <option value="business">Poslovna saradnja</option>
-                          <option value="other">Ostalo</option>
-                        </select>
-                      </div>
-
-                      {/* Message */}
-                      <div>
-                        <label
-                          htmlFor="message"
-                          className="mb-1.5 block text-sm font-medium text-slate-700"
-                        >
-                          Poruka
-                        </label>
-                        <textarea
-                          id="message"
-                          rows={5}
-                          placeholder="Opišite vaše pitanje ili sugestiju..."
-                          className="w-full resize-none rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-700 backdrop-blur-xl transition-all duration-200 placeholder:text-slate-400 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                        />
-                      </div>
-
-                      {/* Submit */}
-                      <button
-                        type="button"
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-6 py-3 text-base font-semibold text-white shadow-md transition-all duration-200 hover:bg-primary-600 hover:shadow-lg active:bg-primary-700 sm:w-auto"
-                      >
-                        Pošalji poruku
-                      </button>
-                    </form>
-                  </div>
+                  <ContactForm />
                 </ScrollReveal>
               </div>
             </div>

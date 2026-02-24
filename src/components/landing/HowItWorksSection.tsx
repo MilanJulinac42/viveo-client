@@ -24,7 +24,7 @@ export default function HowItWorksSection() {
               <span className="h-1 w-6 rounded-full bg-secondary-400" />
             </div>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-500">
-              Tri jednostavna koraka do nezaboravnog poklona
+              Tri jednostavna koraka do omiljenog sadržaja
             </p>
           </div>
         </ScrollReveal>

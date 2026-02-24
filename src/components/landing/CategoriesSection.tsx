@@ -46,7 +46,7 @@ export default async function CategoriesSection() {
         <div className="absolute -left-20 top-0 h-80 w-80 rounded-full bg-secondary-500/10 blur-3xl animate-pulse" style={{ animationDuration: "7s" }} />
         <div className="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-primary-300/15 blur-3xl animate-pulse" style={{ animationDuration: "9s" }} />
 
-        <Container>
+        <Container className="relative z-[2]">
           {/* Section header — white text on dark bg */}
           <ScrollReveal>
             <div className="relative mb-14 text-center text-white">

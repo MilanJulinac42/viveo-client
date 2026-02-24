@@ -27,3 +27,5 @@ export { default as FAQSection } from "./FAQSection";
 export { default as PressLogoBar } from "./PressLogoBar";
 export { default as CTASection } from "./CTASection";
 export { default as MarqueeTicker } from "./MarqueeTicker";
+export { default as MerchPreviewSection } from "./MerchPreviewSection";
+export { default as DigitalPreviewSection } from "./DigitalPreviewSection";

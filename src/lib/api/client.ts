@@ -134,6 +134,11 @@ export function patch<T>(
   });
 }
 
+/** HTTP DELETE */
+export function del<T>(endpoint: string): Promise<ApiResponse<T>> {
+  return request<T>(endpoint, { method: "DELETE" });
+}
+
 /** Upload file via FormData with progress tracking */
 export function postFormData<T>(
   endpoint: string,

@@ -3,8 +3,8 @@
  * Fetches popular celebrities from API; falls back to mock data.
  */
 
+import Link from "next/link";
 import Container from "@/components/layout/Container";
-import Button from "@/components/ui/Button";
 import FloatingElements from "@/components/ui/FloatingElements";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import CelebrityFilterTabs from "./CelebrityFilterTabs";
@@ -51,7 +51,12 @@ export default async function FeaturedCelebritiesSection() {
 
           <ScrollReveal delay={0.4}>
             <div className="mt-12 text-center">
-              <Button variant="outline" size="lg">Pogledaj sve zvezde &rarr;</Button>
+              <Link
+                href="/zvezde"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-primary-500 px-8 py-3.5 text-lg font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50 active:bg-primary-100"
+              >
+                Pogledaj sve zvezde →
+              </Link>
             </div>
           </ScrollReveal>
         </Container>

@@ -22,6 +22,8 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     title: "Platforma",
     links: [
       { label: "Sve zvezde", href: "/zvezde" },
+      { label: "Prodavnica", href: "/prodavnica" },
+      { label: "Digitalni proizvodi", href: "/digitalni-proizvodi" },
       { label: "Postani zvezda", href: "/postani-zvezda" },
       { label: "Moje porudžbine", href: "/moje-porudzbine" },
     ],
@@ -37,19 +39,19 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Podrška",
     links: [
-      { label: "Česta pitanja", href: "#" },
-      { label: "Uslovi korišćenja", href: "#" },
-      { label: "Politika privatnosti", href: "#" },
+      { label: "Česta pitanja", href: "/cesta-pitanja" },
+      { label: "Uslovi korišćenja", href: "/uslovi-koriscenja" },
+      { label: "Politika privatnosti", href: "/politika-privatnosti" },
     ],
   },
 ];
 
-/** Social media links */
+/** Social media links — update URLs when accounts are created */
 const SOCIAL_LINKS = [
-  { label: "Instagram", href: "#", icon: "📸" },
-  { label: "TikTok", href: "#", icon: "🎵" },
-  { label: "Twitter", href: "#", icon: "🐦" },
-  { label: "YouTube", href: "#", icon: "▶️" },
+  { label: "Instagram", href: "https://instagram.com/viveo.rs", icon: "📸" },
+  { label: "TikTok", href: "https://tiktok.com/@viveo.rs", icon: "🎵" },
+  { label: "Twitter", href: "https://twitter.com/viveo_rs", icon: "🐦" },
+  { label: "YouTube", href: "https://youtube.com/@viveo", icon: "▶️" },
 ];
 
 /**
@@ -82,6 +84,8 @@ export default function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg shadow-sm transition-colors hover:bg-primary-50"
                 >

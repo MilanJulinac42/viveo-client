@@ -13,6 +13,10 @@ import RequestsSection from "./RequestsSection";
 import EarningsSection from "./EarningsSection";
 import ProfileSettingsSection from "./ProfileSettingsSection";
 import CalendarSection from "./CalendarSection";
+import ProductsSection from "./ProductsSection";
+import MerchOrdersSection from "./MerchOrdersSection";
+import DigitalProductsSection from "./DigitalProductsSection";
+import DigitalOrdersSection from "./DigitalOrdersSection";
 import {
   getDashboardRequests,
   getDashboardEarnings,
@@ -28,9 +32,31 @@ import type {
   DashboardTab,
 } from "@/lib/types";
 
-/** Mobile tab configuration */
-const MOBILE_TABS: { tab: DashboardTab; label: string; emoji: string }[] = [
+/** Mobile tab configuration — grouped with separators */
+type MobileTab = { tab: DashboardTab; label: string; emoji: string };
+type MobileGroup = { group: string; tabs: MobileTab[] };
+type MobileEntry = MobileTab | MobileGroup;
+
+function isMobileGroup(entry: MobileEntry): entry is MobileGroup {
+  return "group" in entry;
+}
+
+const MOBILE_ENTRIES: MobileEntry[] = [
   { tab: "requests", label: "Zahtevi", emoji: "📋" },
+  {
+    group: "Merch",
+    tabs: [
+      { tab: "products", label: "Proizvodi", emoji: "🛍️" },
+      { tab: "merch-orders", label: "Narudžbine", emoji: "📬" },
+    ],
+  },
+  {
+    group: "Digitalno",
+    tabs: [
+      { tab: "digital-products", label: "Proizvodi", emoji: "💾" },
+      { tab: "digital-orders", label: "Narudžbine", emoji: "📥" },
+    ],
+  },
   { tab: "earnings", label: "Zarada", emoji: "📊" },
   { tab: "profile", label: "Profil", emoji: "👤" },
   { tab: "calendar", label: "Kalendar", emoji: "📅" },
@@ -117,27 +143,57 @@ export default function DashboardClient() {
         <div className="flex-1 p-4 sm:p-6 lg:p-8">
           {/* Mobile tab bar */}
           <div className="mb-6 lg:hidden">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-              {MOBILE_TABS.map((tab) => (
-                <button
-                  key={tab.tab}
-                  onClick={() => setActiveTab(tab.tab)}
-                  className={cn(
-                    "inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200",
-                    activeTab === tab.tab
-                      ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
-                      : "border border-slate-200 bg-white/80 text-slate-600 hover:bg-primary-50 hover:text-primary-700"
-                  )}
-                >
-                  <span>{tab.emoji}</span>
-                  {tab.label}
-                </button>
-              ))}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {MOBILE_ENTRIES.map((entry) => {
+                if (isMobileGroup(entry)) {
+                  return (
+                    <div key={entry.group} className="inline-flex shrink-0 items-center gap-1">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 px-1">
+                        {entry.group}
+                      </span>
+                      {entry.tabs.map((tab) => (
+                        <button
+                          key={tab.tab}
+                          onClick={() => setActiveTab(tab.tab)}
+                          className={cn(
+                            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                            activeTab === tab.tab
+                              ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
+                              : "border border-slate-200 bg-white/80 text-slate-600 hover:bg-primary-50 hover:text-primary-700"
+                          )}
+                        >
+                          <span>{tab.emoji}</span>
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+                  );
+                }
+                return (
+                  <button
+                    key={entry.tab}
+                    onClick={() => setActiveTab(entry.tab)}
+                    className={cn(
+                      "inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                      activeTab === entry.tab
+                        ? "bg-primary-500 text-white shadow-lg shadow-primary-500/25"
+                        : "border border-slate-200 bg-white/80 text-slate-600 hover:bg-primary-50 hover:text-primary-700"
+                    )}
+                  >
+                    <span>{entry.emoji}</span>
+                    {entry.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Active section */}
           {activeTab === "requests" && <RequestsSection requests={requests} />}
+          {activeTab === "products" && <ProductsSection />}
+          {activeTab === "merch-orders" && <MerchOrdersSection />}
+          {activeTab === "digital-products" && <DigitalProductsSection />}
+          {activeTab === "digital-orders" && <DigitalOrdersSection />}
           {activeTab === "earnings" && (
             <EarningsSection earnings={defaultEarnings} celebrity={celebrityData} />
           )}

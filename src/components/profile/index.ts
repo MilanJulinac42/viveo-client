@@ -7,7 +7,7 @@
  * import {
  *   ProfileHero,
  *   ProfileAbout,
- *   ProfileVideoShowcase,
+ *   ProfileTabs,
  *   ProfileReviews,
  *   SimilarCelebrities,
  *   StickyBottomCTA,
@@ -19,8 +19,11 @@
 export { default as ProfileHero } from "./ProfileHero";
 export { default as ProfileStats } from "./ProfileStats";
 export { default as ProfileAbout } from "./ProfileAbout";
+export { default as ProfileTabs } from "./ProfileTabs";
+export { default as ProfileTabsClient } from "./ProfileTabsClient";
 export { default as ProfileVideoShowcase } from "./ProfileVideoShowcase";
 export { default as ProfileVideoMockups } from "./ProfileVideoMockups";
+export { default as EmptyTabState } from "./EmptyTabState";
 export { default as ProfileReviews } from "./ProfileReviews";
 export { default as ProfileReviewList } from "./ProfileReviewList";
 export { default as SimilarCelebrities } from "./SimilarCelebrities";

@@ -15,6 +15,8 @@ import {
   FAQSection,
   PressLogoBar,
   CTASection,
+  MerchPreviewSection,
+  DigitalPreviewSection,
 } from "@/components/landing";
 
 /**
@@ -35,6 +37,8 @@ export default function Home() {
         <FeaturedCelebritiesSection />
         <VideoShowcaseSection />
         <CategoriesSection />
+        <MerchPreviewSection />
+        <DigitalPreviewSection />
         <TestimonialsSection />
         <FAQSection />
         <CTASection />

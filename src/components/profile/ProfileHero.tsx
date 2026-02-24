@@ -79,7 +79,7 @@ export default function ProfileHero({ celebrity }: ProfileHeroProps) {
             <ScrollReveal delay={0.4}>
               <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start">
                 <div className="text-center sm:text-left">
-                  <p className="text-sm text-white/60">Cena video poruke</p>
+                  <p className="text-sm text-white/60">Počev od</p>
                   <p className="text-2xl font-bold text-white">{formatPrice(celebrity.price)}</p>
                 </div>
                 <Link href={`/naruci/${celebrity.slug}`}>
@@ -108,9 +108,9 @@ export default function ProfileHero({ celebrity }: ProfileHeroProps) {
                 {/* Center content */}
                 <div className="relative flex h-80 items-center justify-center">
                   <div className="text-center">
-                    <div className="text-6xl">🎬</div>
-                    <p className="mt-3 text-sm font-medium text-white/60">Video poruka</p>
-                    <p className="text-xs text-white/40">Personalizovano za tebe</p>
+                    <div className="text-6xl">🌟</div>
+                    <p className="mt-3 text-sm font-medium text-white/60">Viveo</p>
+                    <p className="text-xs text-white/40">Sve usluge na jednom mestu</p>
                   </div>
                 </div>
               </div>

@@ -3,8 +3,8 @@
  * Gradient background with curved bottom edge flowing into HowItWorks.
  */
 
+import Link from "next/link";
 import Container from "@/components/layout/Container";
-import Button from "@/components/ui/Button";
 import FloatingElements from "@/components/ui/FloatingElements";
 import CurvedDivider from "@/components/ui/WaveDivider";
 import ScrollReveal from "@/components/ui/ScrollReveal";
@@ -24,7 +24,7 @@ export default function HeroSection() {
       <div className="absolute -bottom-20 -left-20 h-96 w-96 rounded-full bg-secondary-500/10 blur-3xl animate-pulse" style={{ animationDuration: "8s" }} />
       <div className="absolute right-1/3 top-1/4 h-64 w-64 rounded-full bg-accent-500/5 blur-3xl animate-pulse" style={{ animationDuration: "10s" }} />
 
-      <Container>
+      <Container className="relative z-[2]">
         <div className="relative pb-28 pt-14 sm:pb-36 sm:pt-20 lg:pb-44 lg:pt-28">
 
           {/* Two-column: text left, phone right */}
@@ -39,38 +39,46 @@ export default function HeroSection() {
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-secondary-400 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-secondary-400" />
                   </span>
-                  <span>Platforma #1 za video poruke u Srbiji</span>
+                  <span>Platforma #1 za kreatore u Srbiji</span>
                 </div>
               </ScrollReveal>
 
               <ScrollReveal delay={0.15}>
                 <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-                  Personalizovane video poruke od{" "}
+                  Tvoje omiljene{" "}
                   <span className="relative">
                     <span className="bg-gradient-to-r from-secondary-300 to-secondary-500 bg-clip-text text-transparent">
-                      omiljenih zvezda
+                      zvezde
                     </span>
                     <svg className="absolute -bottom-2 left-0 w-full text-secondary-400/60" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none">
                       <path d="M1 8.5C60 2 120 2 150 5.5C180 9 240 11 299 3.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                     </svg>
-                  </span>
+                  </span>{" "}
+                  na dohvat ruke
                 </h1>
               </ScrollReveal>
 
               <ScrollReveal delay={0.3}>
                 <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-primary-100 sm:text-xl lg:mx-0">
-                  Iznenadi nekoga posebnom video porukom od poznatih ličnosti
-                  iz Srbije. Savršen poklon za rođendan, godišnjicu ili bilo
-                  koju priliku.
+                  Video poruke, originalni merch i ekskluzivni digitalni
+                  sadržaj od poznatih ličnosti iz Srbije. Sve na jednom mestu.
                 </p>
               </ScrollReveal>
 
               <ScrollReveal delay={0.45}>
                 <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
-                  <Button variant="secondary" size="lg">🎬 Pronađi zvezdu</Button>
-                  <Button variant="ghost" size="lg" className="border border-white/20 bg-white/10 text-white shadow-lg shadow-black/5 backdrop-blur-xl hover:bg-white/20">
+                  <Link
+                    href="/zvezde"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary-500 px-8 py-3.5 text-lg font-semibold text-white shadow-md transition-all duration-200 hover:bg-secondary-600 hover:shadow-lg active:bg-secondary-700"
+                  >
+                    🎬 Pronađi zvezdu
+                  </Link>
+                  <Link
+                    href="#kako-funkcionise"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-3.5 text-lg font-semibold text-white shadow-lg shadow-black/5 backdrop-blur-xl transition-all duration-200 hover:bg-white/20"
+                  >
                     Kako funkcioniše →
-                  </Button>
+                  </Link>
                 </div>
               </ScrollReveal>
             </div>
